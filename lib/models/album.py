@@ -184,3 +184,17 @@ class Album:
 
         row = CURSOR.execute(sql, (title,)).fetchone()
         return cls.instance_from_db(row) if row else None
+    
+    def songs(self):
+        """Return list of songs associated with current department"""
+        from models.song import Song
+        sql = """
+            SELECT * FROM songs
+            WHERE album_id = ?
+        """
+        CURSOR.execute(sql, (self.id,),)
+
+        rows = CURSOR.fetchall()
+        return [
+            Song.instance_from_db(row) for row in rows
+        ]
