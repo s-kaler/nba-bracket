@@ -13,7 +13,7 @@ class Artist:
         self.genre = genre
 
     def __repr__(self):
-        return f"<Artist {self.id}: {self.name}, {self.genre}>"
+        return f"<Artist {self.id}: {self.name}, Genre: {self.genre}>"
     
     @property
     def name(self):

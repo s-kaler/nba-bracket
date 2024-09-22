@@ -71,10 +71,10 @@ def list_albums():
         print(album)
 
 def find_album_by_title():
-    name = input("Enter the album's name: ")
-    album = Album.find_by_name(name)
+    title = input("Enter the album's title: ")
+    album = Album.find_by_title(title)
     print(album) if album else print(
-        f'Album {name} not found')
+        f'Album {title} not found')
 
 def find_album_by_id():
     # use a trailing underscore not to override the built-in id function
@@ -84,12 +84,12 @@ def find_album_by_id():
 
 
 def create_album():
-    name = input("Enter the album's name: ")
-    song_count = input("Enter the album's song count: ")
+    title = input("Enter the album's title: ")
+    song_count = int(input("Enter the album's song count: "))
     artist_id = int(input("Enter the album's artist id: "))
 
     try:
-        album = Album.create(name, song_count, artist_id)
+        album = Album.create(title, song_count, artist_id)
         print(f'Success: {album}')
     except Exception as exc:
         print("Error creating album: ", exc)
@@ -98,9 +98,9 @@ def update_album():
     id_ = input("Enter the album's id: ")
     if album := Album.find_by_id(id_):
         try:
-            name = input("Enter the album's new name: ")
-            album.name = name
-            song_count = input("Enter the album's new song count: ")
+            title = input("Enter the album's new title: ")
+            album.title = title
+            song_count = int(input("Enter the album's new song count: "))
             album.song_count = song_count
             artist_id = int(input("Enter the album's new artist id: "))
             album.artist_id = artist_id
@@ -152,12 +152,12 @@ def find_song_by_id():
 
 
 def create_song():
-    name = input("Enter the song's title: ")
+    title = input("Enter the song's title: ")
     artist_id = int(input("Enter the song's artist id: "))
     album_id = int(input("Enter the song's album id: "))
 
     try:
-        song = Song.create(name, artist_id, album_id)
+        song = Song.create(title, artist_id, album_id)
         print(f'Success: {song}')
     except Exception as exc:
         print("Error creating song: ", exc)
@@ -166,8 +166,8 @@ def update_song():
     id_ = input("Enter the song's id: ")
     if song := Song.find_by_id(id_):
         try:
-            name = input("Enter the song's new name: ")
-            song.name = name
+            title = input("Enter the song's new title: ")
+            song.title = title
             artist_id = int(input("Enter the song's new artist id: "))
             song.artist_id = artist_id
             album_id = int(input("Enter the song's new album id: "))

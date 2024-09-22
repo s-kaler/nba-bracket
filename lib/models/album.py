@@ -16,7 +16,7 @@ class Album:
 
     def __repr__(self):
         return (
-            f"<album {self.id}: {self.title}, {self.song_count}, " +
+            f"<Album {self.id}: {self.title}, Song Count: {self.song_count}, " +
             f"Artist ID: {self.artist_id}>"
         )
 
