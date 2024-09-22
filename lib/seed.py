@@ -3,6 +3,7 @@
 from models.__init__ import CONN, CURSOR
 from models.artist import Artist
 from models.album import Album
+from models.song import Song
 
 def seed_database():
     Artist.drop_table()
@@ -10,19 +11,20 @@ def seed_database():
     Artist.create_table()
     Album.create_table()
 
-    """
-    # Create seed data
-    payroll = Department.create("Payroll", "Building A, 5th Floor")
-    human_resources = Department.create(
-        "Human Resources", "Building C, East Wing")
-    Employee.create("Amir", "Accountant", payroll.id)
-    Employee.create("Bola", "Manager", payroll.id)
-    Employee.create("Charlie", "Manager", human_resources.id)
-    Employee.create("Dani", "Benefits Coordinator", human_resources.id)
-    Employee.create("Hao", "New Hires Coordinator", human_resources.id)
-    """
     
+    # Create seed data
+    tame_impala = Artist.create("Tame Impala", "Altenative")
+    kaytranada = Artist.create("KAYTRANADA", "Dance")
+    
+    currents = Album.create("Currents", 13, tame_impala.id)
+    the_slow_rush = Album.create("The Slow Rush", 12, tame_impala.id)
+    ninenty_nine = Album.create("99.9%", 15, kaytranada.id)
+    bubba =  Album.create("BUBBA", 17, kaytranada.id)
+    timeless = Album.create("TIMELESS", 21, kaytranada.id)
 
+    #Song.create("")
+
+    
 
 seed_database()
 print("Seeded database")

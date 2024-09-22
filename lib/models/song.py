@@ -9,7 +9,8 @@ class Song:
     # Dictionary of objects saved to the database.
     all = {}
 
-    def __init__(self, title, artist_id, album_id, id=None):
+    #not all songs need to be in an album
+    def __init__(self, title, artist_id, album_id=None, id=None):
         self.id = id
         self.title = title
         self.album_id = album_id
@@ -126,6 +127,7 @@ class Song:
         # Set the id to None
         self.id = None
 
+    #cannot make more songs than album song_count allows
     @classmethod
     def create(cls, title, artist_id, album_id):
         """ Initialize a new album instance and save the object to the database """

@@ -32,10 +32,10 @@ class Artist:
     def genre(self):
         return self._genre
 
-    @name.setter
-    def name(self, genre):
+    @genre.setter
+    def genre(self, genre):
         if isinstance(genre, str) and len(genre):
-            self._name = genre
+            self._genre = genre
         else:
             raise ValueError(
                 "Genre must be a non-empty string"

@@ -32,7 +32,7 @@ class Album:
             raise ValueError(
                 "title must be a non-empty string"
             )
-
+    
     @property
     def song_count(self):
         return self._song_count

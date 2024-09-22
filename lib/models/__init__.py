@@ -1,4 +1,4 @@
 import sqlite3
 
-CONN = sqlite3.connect('movie_store.db')
+CONN = sqlite3.connect('music_library.db')
 CURSOR = CONN.cursor()
