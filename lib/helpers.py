@@ -63,6 +63,13 @@ def delete_artist():
     else:
         print(f'Artist {id_} not found')
 
+def list_artists_by_genre():
+    genre = input("Enter the artist's genre: ")
+    if artists := Artist.find_by_genre(genre):
+        for artist in artists:
+            print(artist)
+    else:
+        print(f'No artists with {genre} found')
 
 #album functions 
 def list_albums():

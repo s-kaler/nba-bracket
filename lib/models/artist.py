@@ -164,6 +164,19 @@ class Artist:
 
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
+    
+    @classmethod
+    def find_by_genre(cls, genre):
+        """Return a list containing an artist object per row in the table matching genre attribute"""
+        sql = """
+            SELECT *
+            FROM artists
+            WHERE genre is ?
+        """
+
+        rows = CURSOR.execute(sql, (genre,)).fetchall()
+        return [cls.instance_from_db(row) for row in rows]
+
 
     def albums(self):
         """Return list of employees associated with current artist"""
