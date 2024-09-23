@@ -55,7 +55,23 @@ def seed_database():
     for song_title in tsr_songs:
         Song.create(song_title, tame_impala.id, the_slow_rush.id)
 
-    
+    ninety_songs = [
+        "Intro",
+        "Bus Ride",
+        "Got It Good (feat. Pharrell Williams)",
+        "Leave Me Alone (feat. BADBADNOTGOOD)",
+        "Lite Spot (feat. GoldLink)",
+        "Atlantis (feat. Little Dragon)",
+        "10% (feat. Craig)",
+        "Together (feat. Syd)",
+        "Be Together (feat. Kali Uchis)",
+        "Talk to Me",
+        "Weight Off (feat. Anderson .Paak)",
+        "99.9%",
+    ]
+
+    for song_title in ninety_songs:
+        Song.create(song_title, kaytranada.id, ninenty_nine.id)
 
 seed_database()
 print("Seeded database")
