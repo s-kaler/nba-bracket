@@ -69,7 +69,7 @@ class Song:
             title TEXT,
             artist_id INTEGER,
             album_id INTEGER,
-            FOREIGN KEY (artist_id) REFERENCES artists(id))
+            FOREIGN KEY (artist_id) REFERENCES artists(id),
             FOREIGN KEY (album_id) REFERENCES albums(id))
         """
         CURSOR.execute(sql)
