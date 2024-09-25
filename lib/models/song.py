@@ -19,7 +19,7 @@ class Song:
     def __repr__(self):
         return (
             f"<song {self.id}: {self.title}, " +
-            f"Artist ID: {self.artist_id}>" +
+            f"Artist ID: {self.artist_id}, " +
             f"Album ID: {self.album_id}>"
         )
 
@@ -54,11 +54,13 @@ class Song:
 
     @album_id.setter
     def album_id(self, album_id):
-        if type(album_id) is int and Album.find_by_id(album_id):
+        if album_id == None:
+            self._album_id = album_id
+        elif type(album_id) is int and Album.find_by_id(album_id):
             self._album_id = album_id
         else:
             raise ValueError(
-                "album_id must reference an album in the database")
+                "album_id must be empty or reference an album in the database")
 
     @classmethod
     def create_table(cls):

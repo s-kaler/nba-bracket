@@ -33,9 +33,9 @@ def seed_database():
         "The Less I Know The Better",
         "Past Life",
         "Disciples",
-        "'Cause I'm A Man"
+        "'Cause I'm A Man",
         "Reality In Motion",
-        "Love/Paranoia"
+        "Love/Paranoia",
         "New Person, Same Old Mistakes"
     ]
     for song_title in currents_songs:
@@ -69,6 +69,7 @@ def seed_database():
         "DESPITE THE WEATHER",
         "GLOWED UP",
         "BREAKDANCE LESSON N.1",
+        "YOU'RE THE ONE",
         "VIVID DREAMS",
         "LITE SPOTS",
         "LEAVE ME ALONE",

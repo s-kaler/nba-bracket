@@ -186,7 +186,7 @@ class Album:
         return cls.instance_from_db(row) if row else None
     
     def songs(self):
-        """Return list of songs associated with current department"""
+        """Return list of songs associated with current album"""
         from models.song import Song
         sql = """
             SELECT * FROM songs

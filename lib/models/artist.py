@@ -191,3 +191,31 @@ class Artist:
         return [
             Album.instance_from_db(row) for row in rows
         ]
+    
+    def songs(self):
+        """Return list of songs associated with current artist"""
+        from models.song import Song
+        sql = """
+            SELECT * FROM songs
+            WHERE artist_id = ?
+        """
+        CURSOR.execute(sql, (self.id,),)
+
+        rows = CURSOR.fetchall()
+        return [
+            Song.instance_from_db(row) for row in rows
+        ]
+    
+    def singles(self):
+        """Return list of songs associated with current artist that have no album"""
+        from models.song import Song
+        sql = """
+            SELECT * FROM songs
+            WHERE artist_id = ? AND album_id is NULL
+        """
+        CURSOR.execute(sql, (self.id,),)
+
+        rows = CURSOR.fetchall()
+        return [
+            Song.instance_from_db(row) for row in rows
+        ]

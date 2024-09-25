@@ -22,7 +22,9 @@ from helpers import (
     update_song,
     delete_song,
     list_album_songs,
-    list_artists_by_genre
+    list_artists_by_genre,
+    list_artist_songs,
+    list_artist_singles
 )
 
 
@@ -97,6 +99,10 @@ def main():
                 delete_song()
             elif choice2 == "7":
                 list_album_songs()
+            elif choice2 == "8":
+                list_artist_songs()
+            elif choice2 == "9":
+                list_artist_singles()
 
         
         else:
@@ -136,16 +142,12 @@ def song_menu():
     print("2. Find song by title")
     print("3. Find song by id")
     print("4. Create new song")
-    #if trying to add song to different album, check max song count
-    #allow songs to have no album id, will be known as a "single"
     print("5. Update existing song")
     print("6. Delete existing song")
-    print("6. Delete existing song")
     print("7. List all songs in album")
-    #print("8. List all songs by artist")
+    print("8. List all songs by artist")
+    print("9. List all singles by artist")
 
 
 if __name__ == "__main__":
     main()
-
-

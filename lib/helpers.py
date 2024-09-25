@@ -158,14 +158,28 @@ def find_song_by_id():
     print(song) if song else print(f'Song {id_} not found')
 
 
+#if trying to add song to different album, check max song count
+#allow songs to have no album id, will be known as a "single"
 def create_song():
     title = input("Enter the song's title: ")
     artist_id = int(input("Enter the song's artist id: "))
-    album_id = int(input("Enter the song's album id: "))
-
+    album_id_text = input("Enter the song's album id: ")
+    if album_id_text == '':
+        album_id = None
+    else:
+        album_id = int(input("Enter the song's album id: "))
+        album = Album.find_by_id(album_id)
+    
     try:
-        song = Song.create(title, artist_id, album_id)
-        print(f'Success: {song}')
+        if album_id:
+            if len(album.songs()) < album.song_count:
+                song = Song.create(title, artist_id, album_id)
+                print(f'Success: {song}')
+            else:
+                print("Album already has maximum amount of songs")
+        else:
+            song = Song.create(title, artist_id, album_id)
+            print(f'Success: {song}')
     except Exception as exc:
         print("Error creating song: ", exc)
 
@@ -178,9 +192,27 @@ def update_song():
             artist_id = int(input("Enter the song's new artist id: "))
             song.artist_id = artist_id
             album_id = int(input("Enter the song's new album id: "))
-            song.album_id = album_id
-            song.update()
-            print(f'Success: {song}')
+
+            if album_id:
+                album = Album.find_by_id(album_id)
+                if album_id == song.album_id:
+                    if len(album.songs()) <= album.song_count:
+                        song.update()
+                        print(f'Success: {song}')
+                    else:
+                        print("Album already has maximum amount of songs")
+                else:
+                    if len(album.songs()) < album.song_count:
+                        song.album_id = album_id
+                        song.update()
+                        print(f'Success: {song}')
+                    else:
+                        print("Album already has maximum amount of songs")
+            else:
+                song.album_id = album_id
+                song.update()
+                print(f'Success: {song}')
+                
         except Exception as exc:
             print("Error updating song: ", exc)
     else:
@@ -206,3 +238,28 @@ def list_album_songs():
     else:
         print(f'Album {id_} not found')
     
+def list_artist_songs():
+    id_ = input("Enter the artist's id: ")
+    artist = Artist.find_by_id(id_)
+    if artist:
+        songs = artist.songs()
+        if songs:
+            for song in songs:
+                print(song)
+        else:
+            print("No singles found")
+    else:
+        print(f'Artist {id_} not found')
+
+def list_artist_singles():
+    id_ = input("Enter the artist's id: ")
+    artist = Artist.find_by_id(id_)
+    if artist:
+        songs = artist.singles()
+        if songs:
+            for song in songs:
+                print(song)
+        else:
+            print("No singles found")
+    else:
+        print(f'Artist {id_} not found')
