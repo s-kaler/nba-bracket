@@ -152,7 +152,6 @@ def find_song_by_title():
         f'Song {title} not found')
 
 def find_song_by_id():
-    # use a trailing underscore not to override the built-in id function
     id_ = input("Enter the song's id: ")
     song = Song.find_by_id(id_)
     print(song) if song else print(f'Song {id_} not found')
@@ -171,6 +170,9 @@ def create_song():
         album = Album.find_by_id(album_id)
     
     try:
+        #if song does not have an album, it is a single
+        #if creating a song, we must check if the album's song count allows for adding a new song
+        #another possible approach would be that adding a song changes the album's song count
         if album_id:
             if len(album.songs()) < album.song_count:
                 song = Song.create(title, artist_id, album_id)
@@ -192,15 +194,14 @@ def update_song():
             artist_id = int(input("Enter the song's new artist id: "))
             song.artist_id = artist_id
             album_id = int(input("Enter the song's new album id: "))
-
+            
+            #similar to creating a new song, if there is no album id, then it is a single
+            #if a song is being updated to a different album id, then we must only check if we are changing the album id
             if album_id:
                 album = Album.find_by_id(album_id)
                 if album_id == song.album_id:
-                    if len(album.songs()) <= album.song_count:
-                        song.update()
-                        print(f'Success: {song}')
-                    else:
-                        print("Album already has maximum amount of songs")
+                    song.update()
+                    print(f'Success: {song}')
                 else:
                     if len(album.songs()) < album.song_count:
                         song.album_id = album_id
@@ -247,7 +248,7 @@ def list_artist_songs():
             for song in songs:
                 print(song)
         else:
-            print("No singles found")
+            print("No songs found")
     else:
         print(f'Artist {id_} not found')
 
