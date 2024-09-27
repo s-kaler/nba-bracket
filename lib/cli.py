@@ -125,6 +125,8 @@ def artist_menu():
     print("5. Update existing artist")
     print("6. Delete existing artist")
     print("7. List all artists by genre")
+    #print("How many albums does an artist have")
+    #print("How many songs does an artist have")
 
 def album_menu():
     print("0. Back")
@@ -135,6 +137,7 @@ def album_menu():
     print("5. Update existing album")
     print("6. Delete existing album")
     print("7. List all albums by artist")
+    #print(" List all albums by song count")
 
 def song_menu():
     print("0. Back")
