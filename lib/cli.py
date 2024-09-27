@@ -24,7 +24,9 @@ from helpers import (
     list_album_songs,
     list_artists_by_genre,
     list_artist_songs,
-    list_artist_singles
+    list_artist_singles,
+    artist_album_count,
+    artist_song_count
 )
 
 
@@ -57,6 +59,10 @@ def main():
                 delete_artist()
             elif choice2 == "7":
                 list_artists_by_genre()
+            elif choice2 == "8":
+                artist_album_count()
+            elif choice2 == "9":
+                artist_song_count()
 
         elif choice == "2":
             #album functions
@@ -125,8 +131,8 @@ def artist_menu():
     print("5. Update existing artist")
     print("6. Delete existing artist")
     print("7. List all artists by genre")
-    #print("How many albums does an artist have")
-    #print("How many songs does an artist have")
+    print("8. Find number of albums by artist")
+    print("9. Find number of songs by artist")
 
 def album_menu():
     print("0. Back")
@@ -137,7 +143,7 @@ def album_menu():
     print("5. Update existing album")
     print("6. Delete existing album")
     print("7. List all albums by artist")
-    #print(" List all albums by song count")
+    #print(" List albums by song count")
 
 def song_menu():
     print("0. Back")

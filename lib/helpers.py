@@ -71,6 +71,31 @@ def list_artists_by_genre():
     else:
         print(f'No artists with {genre} found')
 
+def artist_album_count():
+    id_ = input("Enter the artist's id: ")
+    artist = Artist.find_by_id(id_)
+    if artist:
+        albums = artist.albums()
+        if albums:
+            print(f"{artist.name} has {len(albums)} albums")
+        else:
+            print("No albums found")
+    else:
+        print(f'Artist {id_} not found')
+
+def artist_song_count():
+    id_ = input("Enter the artist's id: ")
+    artist = Artist.find_by_id(id_)
+    if artist:
+        songs = artist.songs()
+        if songs:
+            print(f"{artist.name} has {len(songs)} songs")
+        else:
+            print("No songs found")
+    else:
+        print(f'Artist {id_} not found')
+
+
 #album functions 
 def list_albums():
     albums = Album.get_all()
@@ -84,7 +109,6 @@ def find_album_by_title():
         f'Album {title} not found')
 
 def find_album_by_id():
-    # use a trailing underscore not to override the built-in id function
     id_ = input("Enter the album's id: ")
     album = Album.find_by_id(id_)
     print(album) if album else print(f'Album {id_} not found')
