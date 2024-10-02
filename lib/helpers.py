@@ -100,3 +100,20 @@ def list_current_party():
     for team in party:
         print(team)
 
+def change_nickname():
+    pass
+
+def remove_pokemon_from_party():
+    pass
+
+def add_pokemon_to_party():
+    pass
+
+def party_level():
+    pass
+
+def catch_pokemon():
+    pass
+
+def release_team():
+    pass
