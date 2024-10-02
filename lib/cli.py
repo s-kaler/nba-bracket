@@ -23,10 +23,11 @@ from helpers import (
 )
 from models.team import Team
 
-money = 1000
-pokeballs = 5
+
 
 def main():
+    money = 1000
+    pokeballs = 5
     Team.drop_table()
     Team.create_table()
     starter_is_chosen = False
@@ -67,46 +68,48 @@ def main():
             else:
                 print("Invalid choice")
         else:
-            menu()
+            menu(money, pokeballs)
             choice = input("> ")
         
             if choice == "0":
                 exit_program()
             elif choice == "1":
                 list_all_in_team()
-                print("1. Change nickname of pokemon")
+                print("1. Change nickname of pokemon")    
+                print("2. Remove pokemon from current party")
+                print("3. Add pokemon to current party")
+                print("4. Release an existing Pokemon")
                 choice2 = input("> ")
                 if choice2 == "1":
                     change_nickname()
-            elif choice == "2":
-                print("1. Remove pokemon from current party")
-                print("2. Add pokemon to current party")
-                choice2 = input("> ")
-                if choice2 == "1":
-                    remove_pokemon_from_party()
                 elif choice2 == "2":
+                    remove_pokemon_from_party()
+                elif choice2 == "3":
                     add_pokemon_to_party()
+                elif choice2 == "4":
+                    release_team()
+            elif choice == "2":
+                if pokeballs >  0:
+                    caught = catch_pokemon()
+                    if caught:
+                        pokeballs += -1
+                else:
+                    print("You don't have enough pokeballs.")
             elif choice == "3":
-                catch_pokemon()
-            elif choice == "4":
-                list_all_in_team()
-                release_team()
-            elif choice == "5":
                 list_pokemon_all()
-            elif choice == "6":
+            elif choice == "4":
                 buy_pokeballs()
 
         
-def menu():
+def menu(money, pokeballs):
+    print("")
     print(f"You currently have ${money}.")
     print(f"You have {pokeballs} pokeballs.")
     list_current_party()
-    print("1. View full team information")
-    print("2. Change party configuration")
-    print("3. Catch a new Pokemon")
-    print("4. Release an existing Pokemon")
-    print("5. View the Pokedex")
-    print("6. Buy more pokeballs")
+    print("1. View full team configuration")
+    print("2. Catch a new Pokemon")
+    print("3. View the Pokedex")
+    print("4. Buy more pokeballs")
 
 
 #for catching pokemon, if the wild pokemon is between certain levels, it will be harder to catch

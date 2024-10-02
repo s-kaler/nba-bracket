@@ -1,4 +1,5 @@
 # lib/helpers.py
+import random
 
 from models.pokemon import Pokemon
 from models.team import Team
@@ -67,7 +68,7 @@ def list_pokemon_by_type():
         print(f'No pokemon_all with {find_type} found')
 
 def greeting():
-    print("Please choose on the three starter Pokemon")
+    print("Please choose on the three starter Pokemon.")
     bulbasaur = Pokemon.find_by_name("Bulbasaur")
     charmander = Pokemon.find_by_name("Charmander")
     squirtle = Pokemon.find_by_name("Squirtle")
@@ -99,21 +100,128 @@ def list_current_party():
     print("Current Party: ")
     for team in party:
         print(team)
+    print(f'Party Level: {party_level()}')
+    
+def party_level():
+    party = Team.find_by_party()
+    total_level = 0
+    for team in party:
+        total_level += Pokemon.find_by_id(team.pokemon_id).level
+    return total_level
 
 def change_nickname():
-    pass
+    print("Choose a pokemon to change the nickname of: ")
+    old_nickname = input("> ")
+    team = Team.find_by_nickname(old_nickname)
+    if team:
+        print("What would you like to change it to?")
+        new_nickname = input("> ")
+        team.nickname = new_nickname
+        team.update()
+        print(f'Success: {old_nickname} has been changed to {new_nickname}.')
+    else:
+        print(f'Team member {old_nickname} not found.')
 
 def remove_pokemon_from_party():
-    pass
+    party = Team.find_by_party()
+    if len(party) == 1:
+        print("You cannot remove the last member from the party.")
+        return
+    else:
+        print("Which party member do you want to remove?")
+        nickname = input("> ")
+        party_member = Team.find_by_nickname(nickname)
+        if party_member:
+            if party_member.in_party == 1:
+                party_member.in_party = 0
+                party_member.update()
+                print(f'Success: {nickname} has been removed from the party.')
+            else:
+                print(f'{nickname} is not currently in the party.')
+        else:
+            print(f'Party member {nickname} not found.')
+
 
 def add_pokemon_to_party():
-    pass
-
-def party_level():
-    pass
+    party = Team.find_by_party()
+    if len(party) == 6:
+        print("You cannot add more than 6 members to the party.")
+        return
+    else:
+        print("Which party member do you want to add?")
+        nickname = input("> ")
+        new_party_member = Team.find_by_nickname(nickname)
+        if new_party_member:
+            if new_party_member.in_party == 0:
+                new_party_member.in_party = 1
+                new_party_member.update()
+                print(f'Success: {nickname} has been removed from the party.')
+            else:
+                print(f'{nickname} is already in the party.')
+        else:
+            print(f'Party member {nickname} not found.')
 
 def catch_pokemon():
-    pass
+    random_id = random.randint(1, 151)
+    wild_pokemon = Pokemon.find_by_id(random_id)
+    wild_level =  wild_pokemon.level
+    difficulty = 0
+    difficulty_pct = 0
+    if wild_level >= 1 and wild_level < 10:
+        difficulty = "Easy"
+        difficulty_pct = 75
+    elif wild_level >= 10 and wild_level < 30:
+        difficulty = "Medium"
+        difficulty_pct = 50
+    elif wild_level >= 30 and wild_level < 50:
+        difficulty = "Hard"
+        difficulty_pct = 25
+    else:
+        difficulty = "Very Hard"
+        difficulty_pct = 10
+    
+
+    print(f"A wild {wild_pokemon.name} appeared!")
+    print(wild_pokemon)
+    print("What would like to do?")
+    print("1. Catch pokemon")
+    print("2. Run away")
+    choice = input("> ")
+    if choice == "1":
+        print(f"You caught a {wild_pokemon.name}!")
+        print("Give it a nickname: ")
+        while True:
+            nickname = input("> ")
+            if team := Team.find_by_nickname(nickname):
+                print("You already have a team member with that nickname!")
+            else:
+                break  # Exit the loop if the nickname is unique
+        new_team = Team.create(nickname, wild_pokemon.id, True)
+        print(f'Success: {nickname} has been added to the team!')
+        return True
+    elif choice == "2":
+        print("The wild pokemon got away.")
+        return False
 
 def release_team():
-    pass
+    team_all = Team.get_all()
+    if len(team_all) == 1:
+        print("You cannot release the last pokemon from the team!")
+        return
+    print("Choose a pokemon to release:")
+    nickname = input("> ")
+    team_member = Team.find_by_nickname(nickname)
+    
+    if team_member:
+        if team_member.id == 1:
+            print("You cannot release your starter pokemon from the team!")
+        else:
+            print(f'Are you sure you want to release {nickname}?')
+            are_you_sure = input("> y/n? ")
+            if are_you_sure:
+                team_member.delete()
+                print(f'Success: {nickname} has been released from the team.')
+            else:
+                return
+    else:
+        print(f'Team member {nickname} not found.')
