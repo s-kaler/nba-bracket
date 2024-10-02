@@ -238,3 +238,13 @@ class Pokemon:
         """
         rows = CURSOR.execute(sql, (find_type, find_type)).fetchall()
         return [cls.instance_from_db(row) for row in rows]
+    
+    @classmethod
+    def find_by_level(cls, level):
+        sql = """
+            SELECT *
+            FROM pokemon
+            WHERE level is ?
+        """
+        rows = CURSOR.execute(sql, (level,)).fetchall()
+        return [cls.instance_from_db(row) for row in rows]

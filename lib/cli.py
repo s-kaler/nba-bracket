@@ -110,10 +110,10 @@ def menu():
 
 
 #for catching pokemon, if the wild pokemon is between certain levels, it will be harder to catch
-#5 to 20 is easy
-#20 to 40 is medium
-#40 to 60 is hard
-#60+ is very hard
+#1 to 10 is easy
+#10 to 30 is medium
+#30 to 50 is hard
+#50+ is very hard
 #add up level of all pokemon in party to increase chances of catching
 
 def buy_pokeballs():
