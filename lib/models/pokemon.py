@@ -7,18 +7,38 @@ class Pokemon:
     }
 
     TYPES =  [
-
+        "Grass",
+        "Fire",
+        "Water",
+        "Normal",
+        "Electric",
+        "Fighting",
+        "Flying",
+        "Poison",
+        "Ground",
+        "Rock",
+        "Bug",
+        "Ghost",
+        "Steel",
+        "Psychic",
+        "Ice",
+        "Dragon",
+        "Dark",
+        "Fairy"
     ]
 
-    def __init__(self, name, type, level, hp, id=None):
+    def __init__(self, name, type1, level, hp, type2=None, id=None):
         self.name = name
-        self.type = type
+        self.type1 = type1
         self.level = level
         self.hp = hp
+        self.type2 = type2
         self.id = id
 
     def __repr__(self):
-        return f"{self.name}: {self.type} Type, Level {self.level}, HP: {self.hp}"
+        if self.type2:
+            return f"{self.name}: {self.type1}/{self.type2} Type, Level {self.level}, HP: {self.hp}"
+        return f"{self.name}: {self.type1} Type, Level {self.level}, HP: {self.hp}"
     
     @property
     def name(self):
@@ -34,14 +54,14 @@ class Pokemon:
             )
         
     @property
-    def type(self):
+    def type1(self):
         return self._type
 
-    @type.setter
-    def type(self, type):
-        if isinstance(type, str) and len(type):
-            if type in self.TYPES:
-                self._type = type
+    @type1.setter
+    def type1(self, type1):
+        if isinstance(type1, str) and len(type1):
+            if type1 in self.TYPES:
+                self._type = type1
             else:
                 raise ValueError(
                     "Type must be one of the existing types"
@@ -51,6 +71,26 @@ class Pokemon:
                 "Type cannot be empty"
             )
         
+    @property
+    def type2(self):
+        return self._type2
+
+    @type2.setter
+    def type2(self, type2):
+        if isinstance(type2, str) and len(type2):
+            if type2 in self.TYPES:
+                self._type2 = type2
+            else:
+                raise ValueError(
+                    "Type must be one of the existing types"
+                )
+        elif type2 == "" or type2 == None:
+            self._type2 = None
+        else:
+            raise ValueError(
+                "Type must be either empty or one of the existing types"
+            )
+    
     @property
     def level(self):
         return self._level
@@ -84,9 +124,10 @@ class Pokemon:
             CREATE TABLE IF NOT EXISTS pokemon (
             id INTEGER PRIMARY KEY,
             name TEXT,
-            type TEXT,
+            type1 TEXT,
             level INTEGER,
-            hp INTEGER)
+            hp INTEGER,
+            type2 TEXT)
         """
         CURSOR.execute(sql)
         CONN.commit()
@@ -101,28 +142,28 @@ class Pokemon:
 
     def save(self):
         sql = """
-            INSERT INTO pokemon (name, type, level, hp)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO pokemon (name, type1, level, hp, type2)
+            VALUES (?, ?, ?, ?, ?)
         """
-        CURSOR.execute(sql, (self.name, self.type, self.level, self.hp))
+        CURSOR.execute(sql, (self.name, self.type1, self.level, self.hp, self.type2,))
         CONN.commit()
 
         self.id = CURSOR.lastrowid
         type(self).all[self.id] = self
 
     @classmethod
-    def create(cls, name, type, level, hp):
-        pokemon = cls(name, type, level, hp)
+    def create(cls, name, type1, level, hp, type2=None):
+        pokemon = cls(name, type1, level, hp, type2)
         pokemon.save()
         return pokemon
     
     def update(self):
         sql = """
             UPDATE pokemon
-            SET name = ?, type = ?, level = ?, hp = ?
+            SET name = ?, type1 = ?, level = ?, hp = ?, type2 = ?
             WHERE id = ?
         """
-        CURSOR.execute(sql, (self.name, self.type, self.level, self.hp, self.id))
+        CURSOR.execute(sql, (self.name, self.type1, self.level, self.hp, self.id, self.type2))
         CONN.commit()
 
     def delete(self):
@@ -146,12 +187,13 @@ class Pokemon:
         if pokemon:
             # ensure attributes match row values in case local instance was modified
             pokemon.name = row[1]
-            pokemon.type = row[2]
+            pokemon.type1 = row[2]
             pokemon.level = row[3]
             pokemon.hp = row[4]
+            pokemon.type2 = row[5]
         else:
             # not in dictionary, create new instance and add to dictionary
-            pokemon = cls(row[1], row[2], row[3], row[4])
+            pokemon = cls(row[1], row[2], row[3], row[4], row[5])
             pokemon.id = row[0]
             cls.all[pokemon.id] = pokemon
         return pokemon
@@ -188,11 +230,11 @@ class Pokemon:
     
 
     @classmethod
-    def find_by_type(cls, type):
+    def find_by_type(cls, find_type):
         sql = """
             SELECT *
             FROM pokemon
-            WHERE type is ?
+            WHERE type1 is ? OR type2 is ?
         """
-        rows = CURSOR.execute(sql, (type,)).fetchall()
+        rows = CURSOR.execute(sql, (find_type, find_type)).fetchall()
         return [cls.instance_from_db(row) for row in rows]
