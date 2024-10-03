@@ -5,7 +5,7 @@ from models.pokemon import Pokemon
 from models.team import Team
 
 def exit_program():
-    print("Goodbye!")
+    print("Goodbye! Thanks for playing!")
     exit()
 
 #pokemon functions 
