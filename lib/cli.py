@@ -69,22 +69,33 @@ def main():
             if choice == "0":
                 exit_program()
             elif choice == "1":
+                print("")
+                print("Current Team:")
                 list_all_in_team()
-                print("0. Exit")
+                print("0. Back")
                 print("1. Change nickname of pokemon")    
                 print("2. Remove pokemon from current party")
                 print("3. Add pokemon to current party")
-                print("4. Release an existing Pokemon")
-                choice2 = input("> ")
-                if choice2 == "1":
-                    change_nickname()
-                elif choice2 == "2":
-                    remove_pokemon_from_party()
-                elif choice2 == "3":
-                    add_pokemon_to_party()
-                elif choice2 == "4":
-                    released_money = release_team()
-                    money += released_money
+                print("4. Release a Pokemon for money")
+                while True:
+                    choice2 = input("> ")
+                    if choice2 == "0":
+                        break
+                    if choice2 == "1":
+                        change_nickname()
+                        break
+                    elif choice2 == "2":
+                        remove_pokemon_from_party()
+                        break
+                    elif choice2 == "3":
+                        add_pokemon_to_party()
+                        break
+                    elif choice2 == "4":
+                        released_money = release_team()
+                        money += released_money
+                        break
+                    else:
+                        print("Invalid choice. Please try again.")
             elif choice == "2":
                 if pokeballs >  0:
                     pokeball_used = catch_pokemon()
@@ -93,6 +104,8 @@ def main():
                 else:
                     print("You don't have enough pokeballs.")
             elif choice == "3":
+                print("")
+                print("All Pokemon in the Pokedex:")
                 list_pokemon_all()
             elif choice == "4":
                 buy_pokeballs()
