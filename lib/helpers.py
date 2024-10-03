@@ -206,7 +206,7 @@ def catch_pokemon():
     if chance_to_catch <= difficulty_pct:
         will_be_caught = True
     
-
+    print("")
     print(f"A wild {wild_pokemon.name} appeared!")
     print(f"Difficulty: {difficulty}")
     print(wild_pokemon)
