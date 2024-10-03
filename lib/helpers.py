@@ -172,6 +172,14 @@ def add_pokemon_to_party():
         else:
             print(f'Party member {nickname} not found.')
 
+
+#for catching pokemon, if the wild pokemon is between certain levels, it will be harder to catch
+#1 to 10 is easy
+#10 to 30 is medium
+#30 to 50 is hard
+#50+ is very hard
+#add up level of all pokemon in party to increase chances of catching
+
 def catch_pokemon():
     random_id = random.randint(1, 151)
     wild_pokemon = Pokemon.find_by_id(random_id)
@@ -248,7 +256,7 @@ def release_team():
             if are_you_sure == "y":
                 team_member.delete()
                 print(f'Success: {nickname} has been released from the team.')
-                print(f'You gained {released_money} dollars.')
+                print(f'You gained ${released_money}')
                 return released_money
             else:
                 return 0

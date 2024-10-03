@@ -111,17 +111,10 @@ def menu():
     print("4. Buy more pokeballs")
 
 
-#for catching pokemon, if the wild pokemon is between certain levels, it will be harder to catch
-#1 to 10 is easy
-#10 to 30 is medium
-#30 to 50 is hard
-#50+ is very hard
-#add up level of all pokemon in party to increase chances of catching
-
 def buy_pokeballs():
     global money, pokeballs
     price = 10
-    print("Pokeballs cost 5 dollars. How many would you like to buy?")
+    print("Pokeballs cost $5. How many would you like to buy?")
     while True:
         amount = input("> ")
         if amount.isnumeric():
