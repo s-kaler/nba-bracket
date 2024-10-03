@@ -24,10 +24,11 @@ from helpers import (
 from models.team import Team
 
 
+money = 1000
+pokeballs = 5
 
 def main():
-    money = 1000
-    pokeballs = 5
+    global money, pokeballs
     Team.drop_table()
     Team.create_table()
     starter_is_chosen = False
@@ -68,7 +69,7 @@ def main():
             else:
                 print("Invalid choice")
         else:
-            menu(money, pokeballs)
+            menu()
             choice = input("> ")
         
             if choice == "0":
@@ -87,11 +88,12 @@ def main():
                 elif choice2 == "3":
                     add_pokemon_to_party()
                 elif choice2 == "4":
-                    release_team()
+                    released_money = release_team()
+                    money += released_money
             elif choice == "2":
                 if pokeballs >  0:
-                    caught = catch_pokemon()
-                    if caught:
+                    pokeball_used = catch_pokemon()
+                    if pokeball_used:
                         pokeballs += -1
                 else:
                     print("You don't have enough pokeballs.")
@@ -101,7 +103,8 @@ def main():
                 buy_pokeballs()
 
         
-def menu(money, pokeballs):
+def menu():
+    global money, pokeballs
     print("")
     print(f"You currently have ${money}.")
     print(f"You have {pokeballs} pokeballs.")
@@ -120,7 +123,24 @@ def menu(money, pokeballs):
 #add up level of all pokemon in party to increase chances of catching
 
 def buy_pokeballs():
-    pass
+    global money, pokeballs
+    price = 10
+    print("Pokeballs cost 5 dollars. How many would you like to buy?")
+    while True:
+        amount = input("> ")
+        if amount.isnumeric():
+            amount = int(amount)
+            if money >= amount * price:
+                money -= amount * price
+                print(f"You have successfully bought {amount} pokeballs for ${price * amount}.")
+                pokeballs += amount
+                return
+            else:
+                print("You don't have enough money.")
+        else:
+            print("Please enter a valid number.")
+
+
 
 
 if __name__ == "__main__":

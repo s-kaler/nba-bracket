@@ -179,26 +179,38 @@ def catch_pokemon():
     else:
         difficulty = "Very Hard"
         difficulty_pct = 10
+
+    party_lvl = party_level()
+    chance_boost = party_lvl / 5
+    chance_to_catch = random.randint(0, 100) + chance_boost
+    will_be_caught = False
+    if chance_to_catch <= difficulty_pct:
+        will_be_caught = True
     
 
     print(f"A wild {wild_pokemon.name} appeared!")
+    print(f"Difficulty: {difficulty}")
     print(wild_pokemon)
     print("What would like to do?")
     print("1. Catch pokemon")
     print("2. Run away")
     choice = input("> ")
     if choice == "1":
-        print(f"You caught a {wild_pokemon.name}!")
-        print("Give it a nickname: ")
-        while True:
-            nickname = input("> ")
-            if team := Team.find_by_nickname(nickname):
-                print("You already have a team member with that nickname!")
-            else:
-                break  # Exit the loop if the nickname is unique
-        new_team = Team.create(nickname, wild_pokemon.id, True)
-        print(f'Success: {nickname} has been added to the team!')
-        return True
+        if(will_be_caught):
+            print(f"Success! You caught a {wild_pokemon.name}!")
+            print("Give it a nickname: ")
+            while True:
+                nickname = input("> ")
+                if team := Team.find_by_nickname(nickname):
+                    print("You already have a team member with that nickname!")
+                else:
+                    break  # Exit the loop if the nickname is unique
+            new_team = Team.create(nickname, wild_pokemon.id, True)
+            print(f'Success: {nickname} has been added to the team!')
+            return True
+        else:
+            print(f"The pokeball broke and the pokemon got away.")
+            return True
     elif choice == "2":
         print("The wild pokemon got away.")
         return False
@@ -211,6 +223,7 @@ def release_team():
     print("Choose a pokemon to release:")
     nickname = input("> ")
     team_member = Team.find_by_nickname(nickname)
+    released_money = Pokemon.find_by_id(team_member.pokemon_id).level * 3
     
     if team_member:
         if team_member.id == 1:
@@ -218,10 +231,13 @@ def release_team():
         else:
             print(f'Are you sure you want to release {nickname}?')
             are_you_sure = input("> y/n? ")
-            if are_you_sure:
+            if are_you_sure == "y":
                 team_member.delete()
                 print(f'Success: {nickname} has been released from the team.')
+                print(f'You gained {released_money} dollars.')
+                return released_money
             else:
-                return
+                return 0
     else:
         print(f'Team member {nickname} not found.')
+        return 0
