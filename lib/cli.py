@@ -57,17 +57,11 @@ def main():
         #if they choose to catch new pokemon, show a list of available pokemon
         #if they choose to release existing pokemon, show a list of their current team
 
-        #as a bonus, users can create their own new pokemon
-
 
         if not starter_is_chosen:
             greeting()
-            starter_choice = input("> ")
-            if starter_choice == "1" or starter_choice == "2" or starter_choice == "3":
-                add_starter(starter_choice)
-                starter_is_chosen = True
-            else:
-                print("Invalid choice")
+            starter_is_chosen = add_starter()
+            
         else:
             menu()
             choice = input("> ")
@@ -76,6 +70,7 @@ def main():
                 exit_program()
             elif choice == "1":
                 list_all_in_team()
+                print("0. Exit")
                 print("1. Change nickname of pokemon")    
                 print("2. Remove pokemon from current party")
                 print("3. Add pokemon to current party")
@@ -109,6 +104,7 @@ def menu():
     print(f"You currently have ${money}.")
     print(f"You have {pokeballs} pokeballs.")
     list_current_party()
+    print("0. Exit")
     print("1. View full team configuration")
     print("2. Catch a new Pokemon")
     print("3. View the Pokedex")
@@ -132,15 +128,13 @@ def buy_pokeballs():
             amount = int(amount)
             if money >= amount * price:
                 money -= amount * price
-                print(f"You have successfully bought {amount} pokeballs for ${price * amount}.")
+                print(f"You bought {amount} pokeballs for ${price * amount}.")
                 pokeballs += amount
                 return
             else:
                 print("You don't have enough money.")
         else:
             print("Please enter a valid number.")
-
-
 
 
 if __name__ == "__main__":

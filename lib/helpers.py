@@ -68,7 +68,7 @@ def list_pokemon_by_type():
         print(f'No pokemon_all with {find_type} found')
 
 def greeting():
-    print("Please choose on the three starter Pokemon.")
+    print("Please choose one of the three starter Pokemon.")
     bulbasaur = Pokemon.find_by_name("Bulbasaur")
     charmander = Pokemon.find_by_name("Charmander")
     squirtle = Pokemon.find_by_name("Squirtle")
@@ -76,19 +76,30 @@ def greeting():
     print(f"2. {charmander}")
     print(f"3. {squirtle}")
 
-def add_starter(starter_choice):
+def add_starter():
     pokemon_name = ""
-    if starter_choice == "1":
-        pokemon_name = "Bulbasaur"
-    elif starter_choice == "2":
-        pokemon_name = "Charmander"
-    elif starter_choice == "3":
-        pokemon_name = "Squirtle"
+    while True:
+        starter_choice = input("> ")
+        if starter_choice == "1" or starter_choice == "2" or starter_choice == "3":
+            if starter_choice == "1":
+                pokemon_name = "Bulbasaur"
+            elif starter_choice == "2":
+                pokemon_name = "Charmander"
+            elif starter_choice == "3":
+                pokemon_name = "Squirtle"
+            break
+        else:
+            print("Invalid choice")
     print(f"You've chosen {pokemon_name}! Give your pokemon a nickname: ")
-    nickname = input("> ")
-    pokemon = Pokemon.find_by_name(pokemon_name)
-    new_team = Team.create(nickname, pokemon.id, True)
-    print(f'Success: {nickname} has been added to the team!')
+    while True:
+        nickname = input("> ")
+        if nickname:
+            pokemon = Pokemon.find_by_name(pokemon_name)
+            new_team = Team.create(nickname, pokemon.id, True)
+            print(f'Success: {nickname} has been added to the team!')
+            return True
+        else:
+            print("Please enter a nickname.")
 
 def list_all_in_team():
     team_all = Team.get_all()
@@ -194,26 +205,29 @@ def catch_pokemon():
     print("What would like to do?")
     print("1. Catch pokemon")
     print("2. Run away")
-    choice = input("> ")
-    if choice == "1":
-        if(will_be_caught):
-            print(f"Success! You caught a {wild_pokemon.name}!")
-            print("Give it a nickname: ")
-            while True:
-                nickname = input("> ")
-                if team := Team.find_by_nickname(nickname):
-                    print("You already have a team member with that nickname!")
-                else:
-                    break  # Exit the loop if the nickname is unique
-            new_team = Team.create(nickname, wild_pokemon.id, True)
-            print(f'Success: {nickname} has been added to the team!')
-            return True
+    while True:
+        choice = input("> ")
+        if choice == "1":
+            if(will_be_caught):
+                print(f"Success! You caught a {wild_pokemon.name}!")
+                print("Give it a nickname: ")
+                while True:
+                    nickname = input("> ")
+                    if team := Team.find_by_nickname(nickname):
+                        print("You already have a team member with that nickname!")
+                    else:
+                        break  # Exit the loop if the nickname is unique
+                new_team = Team.create(nickname, wild_pokemon.id, True)
+                print(f'Success: {nickname} has been added to the team!')
+                return True
+            else:
+                print(f"The pokeball broke and the pokemon got away.")
+                return True
+        elif choice == "2":
+            print("The wild pokemon got away.")
+            return False
         else:
-            print(f"The pokeball broke and the pokemon got away.")
-            return True
-    elif choice == "2":
-        print("The wild pokemon got away.")
-        return False
+            print("Invalid choice. Please try again.")
 
 def release_team():
     team_all = Team.get_all()
