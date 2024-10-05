@@ -259,7 +259,7 @@ def release_team():
     
     if team_member:
         released_money = Pokemon.find_by_id(team_member.pokemon_id).level * 3
-        if team_member.in_party == 1 and len(party):
+        if team_member.in_party == 1 and len(party) == 1:
             print(f'You cannot release your last pokemon in the party!')
             return 0
         if team_member.id == 1:
