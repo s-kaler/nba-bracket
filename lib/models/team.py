@@ -131,6 +131,7 @@ class Team:
             cls.all[team.id] = team
         return team
 
+
     @classmethod
     def get_all(cls):
         """Return a list containing one team object per table row"""
@@ -168,7 +169,7 @@ class Team:
         return cls.instance_from_db(row) if row else None
     
     @classmethod
-    def find_by_party(cls):
+    def list_all_party(cls):
         """Return a list containing an artist object per row in the table matching genre attribute"""
         sql = """
             SELECT *

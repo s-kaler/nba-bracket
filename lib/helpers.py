@@ -107,14 +107,14 @@ def list_all_in_team():
         print(team)
 
 def list_current_party():
-    party = Team.find_by_party()
+    party = Team.list_all_party()
     print("Current Party: ")
     for team in party:
         print(team)
     print(f'Party Level: {party_level()}')
     
 def party_level():
-    party = Team.find_by_party()
+    party = Team.list_all_party()
     total_level = 0
     for team in party:
         total_level += Pokemon.find_by_id(team.pokemon_id).level
@@ -134,7 +134,7 @@ def change_nickname():
         print(f'Team member {old_nickname} not found.')
 
 def remove_pokemon_from_party():
-    party = Team.find_by_party()
+    party = Team.list_all_party()
     if len(party) == 1:
         print("You cannot remove the last member from the party.")
         return
@@ -155,7 +155,7 @@ def remove_pokemon_from_party():
 
 def add_pokemon_to_party():
     all_team = Team.get_all()
-    party = Team.find_by_party()
+    party = Team.list_all_party()
     
     if len(party) == 6:
         print("You cannot add more than 6 members to the party.")
@@ -205,6 +205,7 @@ def catch_pokemon():
         difficulty = "Very Hard"
         difficulty_pct = 10
 
+    party = Team.list_all_party()
     party_lvl = party_level()
     chance_boost = party_lvl / 5
     chance_to_catch = random.randint(0, 100) + chance_boost
@@ -231,7 +232,10 @@ def catch_pokemon():
                         print("You already have a team member with that nickname!")
                     else:
                         break  # Exit the loop if the nickname is unique
-                new_team = Team.create(nickname, wild_pokemon.id, True)
+                if len(party) == 6:
+                    new_team = Team.create(nickname, wild_pokemon.id, False)
+                else:
+                    new_team = Team.create(nickname, wild_pokemon.id, True)
                 print(f'Success: {nickname} has been added to the team!')
                 return True
             else:
