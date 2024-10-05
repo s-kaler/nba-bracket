@@ -176,7 +176,7 @@ def add_pokemon_to_party():
                 else:
                     print(f'{nickname} is already in the party.')
             else:
-                print(f'Party member {nickname} not found.')
+                print(f'Team member {nickname} not found.')
 
 
 #for catching pokemon, if the wild pokemon is between certain levels, it will be harder to catch
