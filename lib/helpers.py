@@ -250,6 +250,7 @@ def release_team():
     if team_member:
         if team_member.id == 1:
             print("You cannot release your starter pokemon from the team!")
+            return 0
         else:
             print(f'Are you sure you want to release {nickname}?')
             are_you_sure = input("> y/n? ")
