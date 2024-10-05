@@ -248,6 +248,7 @@ def catch_pokemon():
             print("Invalid choice. Please try again.")
 
 def release_team():
+    party = Team.list_all_party()
     team_all = Team.get_all()
     if len(team_all) == 1:
         print("You cannot release the last pokemon from the team!")
@@ -258,6 +259,9 @@ def release_team():
     
     if team_member:
         released_money = Pokemon.find_by_id(team_member.pokemon_id).level * 3
+        if team_member.in_party == 1 and len(party):
+            print(f'You cannot release your last pokemon in the party!')
+            return 0
         if team_member.id == 1:
             print("You cannot release your starter pokemon from the team!")
             return 0
