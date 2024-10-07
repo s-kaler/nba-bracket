@@ -187,7 +187,8 @@ def add_pokemon_to_party():
 #add up level of all pokemon in party to increase chances of catching
 
 def catch_pokemon():
-    random_id = random.randint(1, 151)
+    pokedex_length = len(Pokemon.get_all())
+    random_id = random.randint(1, pokedex_length)
     wild_pokemon = Pokemon.find_by_id(random_id)
     wild_level =  wild_pokemon.level
     difficulty = 0
