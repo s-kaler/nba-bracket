@@ -278,3 +278,63 @@ def release_team():
     else:
         print(f'Team member {nickname} not found.')
         return 0
+    
+def create_new_pokemon():
+    print("WARNING: Creating a new Pokemon may make your experience unbalanced.")
+    print("Are you sure you want to continue?")
+    are_you_sure = input("> y/n? ")
+    if are_you_sure == "y":
+        pass
+    else:
+        print("New Pokemon creation cancelled.")
+        return 0
+    print("Enter the name of your new Pokemon: ")
+    while True:
+        new_pokemon_name = input("> ")
+        if new_pokemon_name:
+            if Pokemon.find_by_name(new_pokemon_name):
+                print("That name is already taken. Please choose a different name.")
+            else:
+                break  # Exit the loop if the name is unique
+        else:
+                print("Invalid choice. Please enter a name for your new Pokemon.")
+    print("Choose a Type for your new Pokemon: ")
+    for index, type1 in enumerate(Pokemon.TYPES):
+        print(f"{index}. {type1}")
+    while True:
+        new_pokemon_type1 = input("> ")
+        if new_pokemon_type1.isdigit() and int(new_pokemon_type1) >= 0 and int(new_pokemon_type1) < len(Pokemon.TYPES):
+            new_pokemon_type1 = Pokemon.TYPES[int(new_pokemon_type1)]
+            break
+        else:
+            print("Invalid choice. Please try again.")
+    print("Choose a second Type for your new Pokemon: ")
+    print("If you do not want a second type, type None")
+    while True:
+        new_pokemon_type2 = input("> ")
+        if new_pokemon_type2.lower() == "none":
+            new_pokemon_type2 = None
+            break
+        elif new_pokemon_type2.isdigit() and int(new_pokemon_type2) >= 0 and int(new_pokemon_type2) < len(Pokemon.TYPES):
+            new_pokemon_type2 = Pokemon.TYPES[int(new_pokemon_type2)]
+            break
+        else:
+            print("Invalid choice. Please enter a number between 1 and 100.")
+    print("Enter the level of your new Pokemon: ")
+    while True:
+        new_pokemon_level = input("> ")
+        if new_pokemon_level.isdigit() and int(new_pokemon_level) > 0 and int(new_pokemon_level) <= 100:
+            new_pokemon_level = int(new_pokemon_level)
+            break
+        else:
+            print("Invalid choice. Please try again.")
+    print("Please enter the HP of your new Pokemon: ")
+    while True:
+        new_pokemon_hp = input("> ")
+        if new_pokemon_hp.isdigit() and int(new_pokemon_hp) > 0 and int(new_pokemon_hp) <= 1000:
+            new_pokemon_hp = int(new_pokemon_hp)
+            break
+        else:
+            print("Invalid choice. Please enter a number between 1 and 1000.")
+    new_pokemon = Pokemon.create(new_pokemon_name, new_pokemon_type1, new_pokemon_level, new_pokemon_hp, new_pokemon_type2)
+    print(f'Success: {new_pokemon} has been added to the Pokedex.')

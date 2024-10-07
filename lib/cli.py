@@ -3,12 +3,6 @@
 from helpers import (
     exit_program,
     list_pokemon_all,
-    find_pokemon_by_name,
-    find_pokemon_by_id,
-    create_pokemon,
-    update_pokemon,
-    delete_pokemon,
-    list_pokemon_by_type,
     add_starter,
     greeting,
     list_all_in_team,
@@ -19,7 +13,7 @@ from helpers import (
     add_pokemon_to_party,
     catch_pokemon,
     release_team,
-    party_level,
+    create_new_pokemon
 )
 from models.team import Team
 
@@ -109,6 +103,9 @@ def main():
                 list_pokemon_all()
             elif choice == "4":
                 buy_pokeballs()
+            elif choice == "5":
+                create_new_pokemon()
+
 
         
 def menu():
@@ -122,6 +119,7 @@ def menu():
     print("2. Catch a new Pokemon")
     print("3. View the Pokedex")
     print("4. Buy more pokeballs")
+    print("5. Create a new pokemon")
 
 
 def buy_pokeballs():

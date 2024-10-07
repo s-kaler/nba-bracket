@@ -116,7 +116,10 @@ class Pokemon:
             raise ValueError(
                 "HP must be an integer between 1 and 999"
             )
-        
+    
+    @property
+    def get_types(self):
+        return self._TYPES
 
     @classmethod
     def create_table(cls):
