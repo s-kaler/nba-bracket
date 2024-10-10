@@ -4,7 +4,7 @@ from helpers import (
     exit_program,
     greeting,
     teams_menu,
-    players_menu
+    players_menu,
 )
 
 def main():
@@ -21,9 +21,10 @@ def main():
 
 
 def menu():
-    print("0. Exit")
-    print("1. Team Management")
-    print("2. Player Management")
+    print("Main Menu")
+    print(" 0. Exit")
+    print(" 1. Team Management")
+    print(" 2. Player Management")
 
 if __name__ == "__main__":
     main()
