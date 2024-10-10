@@ -487,11 +487,11 @@ def update_starting_roster():
         print("-----Starting Roster-----")
         for player in team_roster:
             if player.starter == 1:
-                print("  ", player)
+                print("  ", display_player(player))
         print("-----Bench-----")
         for player in team_roster:
             if player.starter == 0:
-                print("  ", player)
+                print("  ", display_player(player))
         print("Which player's status do you want to change?")
         name = input("> ")
         player = Player.find_by_name(name)
