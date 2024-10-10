@@ -5,7 +5,7 @@ from models.team import Team
 
 class Player:
     all = {}
-    def __init__(self, name, height, position, starter, team_id, id=None):
+    def __init__(self, name, height, position, starter, team_id=None, id=None):
         self.name = name
         self.height = height
         self.position = position
@@ -14,9 +14,8 @@ class Player:
         self.id = id
 
     def __repr__(self):
-        team = Team.find_by_id(self.team_id)
-        height_formatted = f"{self.height / 12}\'{self.height % 12}\""
-        return f"{self.name}: {height_formatted} Position: {team.position}. Plays for: {team}"
+        height_formatted = f"{int(self.height / 12)}\'{self.height % 12}\""
+        return f"{self.name}: {height_formatted}, {self.position}"
     
     @property
     def name(self):
@@ -70,18 +69,19 @@ class Player:
                 "starter must be a 0 or 1"
             )
         
-    
     @property
     def team_id(self):
         return self._team_id
 
     @team_id.setter
     def team_id(self, team_id):
-        if type(team_id) is int and Team.find_by_id(team_id):
+        if isinstance(team_id, int) and Team.find_by_id(team_id):
             self._team_id = team_id
+        elif team_id is None:
+            self._team_id = None
         else:
             raise ValueError(
-                "team_id must reference a team in the database")
+                "team_id must reference a team in the database or None")
 
     @classmethod
     def create_table(cls):
@@ -92,6 +92,7 @@ class Player:
             height INTEGER,
             position TEXT,
             starter BIT,
+            team_id INTEGER,
             FOREIGN KEY (team_id) REFERENCES teams(id))
         """
         CURSOR.execute(sql)
@@ -107,7 +108,7 @@ class Player:
 
     def save(self):
         sql = """
-                INSERT INTO players name, height, position, starter, team_id)
+                INSERT INTO players (name, height, position, starter, team_id)
                 VALUES (?, ?, ?, ?, ?)
         """
         CURSOR.execute(sql, (self.name, self.height, self.position, self.starter, self.team_id))
@@ -138,8 +139,8 @@ class Player:
         self.id = None
 
     @classmethod
-    def create(cls, name, team_id, height, position, starter):
-        player = cls(name,team_id, height, position, starter) 
+    def create(cls, name, height, position, starter, team_id):
+        player = cls(name, height, position, starter, team_id) 
         player.save()
         return player
 
@@ -216,10 +217,11 @@ class Player:
         sql = """
             SELECT *
             FROM players
-            WHERE position is ?
+            WHERE
+                position LIKE ?
         """
 
-        rows = CURSOR.execute(sql, (position,)).fetchall()
+        rows = CURSOR.execute(sql, (f"%{position}%",)).fetchall()
         return [cls.instance_from_db(row) for row in rows]
     
     @classmethod
@@ -245,4 +247,16 @@ class Player:
         """
 
         rows = CURSOR.execute(sql, (team_id,)).fetchall()
+        return [cls.instance_from_db(row) for row in rows]
+    
+    @classmethod
+    def find_by_starter_and_team(cls, starter, team_id):
+        """Return list of player objects corresponding to all table rows matching specified starter and team id"""
+        sql = """
+            SELECT *
+            FROM players
+            WHERE starter is ? AND team_id is ?
+        """
+
+        rows = CURSOR.execute(sql, (starter, team_id)).fetchall()
         return [cls.instance_from_db(row) for row in rows]

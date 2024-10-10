@@ -6,15 +6,19 @@ class Team:
     all = {
     }
 
-    def __init__(self, name, city, league, id=None):
+    def __init__(self, name, location, league, id=None):
         self.name = name
-        self.city = city
+        self.location = location
         self.league = league
         self.id = id
 
     def __repr__(self):
-        return f"{self.city} {self.name}"
+        return f"{self.location} {self.name}, League: {self.league}"
 
+    @property
+    def name(self):
+        return self._name
+    
     @name.setter
     def name(self, name):
         if isinstance(name, str) and len(name):
@@ -25,17 +29,16 @@ class Team:
             )
 
     @property
-
-    def city(self):
-        return self.city
+    def location(self):
+        return self._location
     
-    @city.setter
-    def city(self, city):
-        if isinstance(city, str) and len(city):
-            self._city = city
+    @location.setter
+    def location(self, location):
+        if isinstance(location, str) and len(location):
+            self._location = location
         else:
             raise ValueError(
-                "City must be a non-empty string"
+                "location must be a non-empty string"
             )
 
     @property
@@ -58,7 +61,7 @@ class Team:
             CREATE TABLE IF NOT EXISTS teams (
             id INTEGER PRIMARY KEY,
             name TEXT,
-            city TEXT,
+            location TEXT,
             league TEXT
             )
         """
@@ -75,28 +78,28 @@ class Team:
 
     def save(self):
         sql = """
-            INSERT INTO teams (name, city, league)
+            INSERT INTO teams (name, location, league)
             VALUES (?, ?, ?)
         """
-        CURSOR.execute(sql, (self.name, self.city, self.league))
+        CURSOR.execute(sql, (self.name, self.location, self.league))
         CONN.commit()
 
         self.id = CURSOR.lastrowid
         type(self).all[self.id] = self
 
     @classmethod
-    def create(cls, name, city, league):
-        team = cls(name, city, league)
+    def create(cls, name, location, league):
+        team = cls(name, location, league)
         team.save()
         return team
     
     def update(self):
         sql = """
             UPDATE teams
-            SET name = ?, city = ?, league = ?
+            SET name = ?, location = ?, league = ?
             WHERE id = ?
         """
-        CURSOR.execute(sql, (self.name, self.city, self.league, self.id))
+        CURSOR.execute(sql, (self.name, self.location, self.league, self.id))
         CONN.commit()
 
     def delete(self):
@@ -120,7 +123,7 @@ class Team:
         if team:
             # ensure attributes match row values in case local instance was modified
             team.name = row[1]
-            team.city = row[2]
+            team.location = row[2]
             team.league = row[3]
         else:
             # not in dictionary, create new instance and add to dictionary
@@ -159,13 +162,13 @@ class Team:
         return cls.instance_from_db(row) if row else None
     
     @classmethod
-    def find_by_city(cls, city):
+    def find_by_location(cls, location):
         sql = """
             SELECT *
             FROM teams
-            WHERE city is ?
+            WHERE location is ?
         """
-        rows = CURSOR.execute(sql, (city,)).fetchall()
+        rows = CURSOR.execute(sql, (location,)).fetchall()
         return [cls.instance_from_db(row) for row in rows]
     
     @classmethod
