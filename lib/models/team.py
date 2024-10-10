@@ -1,129 +1,127 @@
-# lib/models/team.py
+# lib/models/pokemon.py
 from models.__init__ import CURSOR, CONN
-from models.pokemon import Pokemon
-
 
 class Team:
-    all = {}
-    def __init__(self, nickname, pokemon_id, in_party=True, id=None):
-        self.nickname = nickname
-        self.pokemon_id = pokemon_id
-        self.in_party = in_party
+
+    all = {
+    }
+
+    def __init__(self, name, city, league, id=None):
+        self.name = name
+        self.city = city
+        self.league = league
         self.id = id
 
     def __repr__(self):
-        pokemon = Pokemon.find_by_id(self.pokemon_id)
-        if self.in_party:
-            return f"{self.nickname} (In Party): {pokemon}"
-        return f"{self.nickname}: {pokemon}"
-    
-    @property
-    def nickname(self):
-        return self._nickname
+        return f"{self.city} {self.name}"
 
-    @nickname.setter
-    def nickname(self, nickname):
-        if isinstance(nickname, str) and len(nickname):
-            self._nickname = nickname
+    @name.setter
+    def name(self, name):
+        if isinstance(name, str) and len(name):
+            self._name = name
         else:
             raise ValueError(
-                "Nickname must be a non-empty string"
-            )
-    
-    @property
-    def in_party(self):
-        return self._in_party
-
-    @in_party.setter
-    def in_party(self, in_party):
-        if isinstance(in_party, int) and in_party == 0 or in_party == 1:
-            self._in_party = in_party
-        else:
-            raise ValueError(
-                "in_party must be a 0 or 1"
+                "Name must be a non-empty string"
             )
 
     @property
-    def pokemon_id(self):
-        return self._pokemon_id
 
-    @pokemon_id.setter
-    def pokemon_id(self, pokemon_id):
-        if type(pokemon_id) is int and Pokemon.find_by_id(pokemon_id):
-            self._pokemon_id = pokemon_id
+    def city(self):
+        return self.city
+    
+    @city.setter
+    def city(self, city):
+        if isinstance(city, str) and len(city):
+            self._city = city
         else:
             raise ValueError(
-                "pokemon_id must reference a pokemon in the database")
+                "City must be a non-empty string"
+            )
+
+    @property
+    def league(self):
+        return self._league
+
+    @league.setter
+    def league(self, league):
+        if isinstance(league, str) and len(league):
+            self._league = league
+        else:
+            raise ValueError(
+                "League must be a non-empty string"
+            )
+    
 
     @classmethod
     def create_table(cls):
         sql = """
-            CREATE TABLE IF NOT EXISTS team (
+            CREATE TABLE IF NOT EXISTS teams (
             id INTEGER PRIMARY KEY,
-            nickname TEXT,
-            in_party BIT,
-            pokemon_id INTEGER,
-            FOREIGN KEY (pokemon_id) REFERENCES artists(id))
+            name TEXT,
+            city TEXT,
+            league TEXT
+            )
         """
         CURSOR.execute(sql)
         CONN.commit()
-
+    
     @classmethod
     def drop_table(cls):
-        """ Drop the table that persists team instances """
         sql = """
-            DROP TABLE IF EXISTS team;
+            DROP TABLE IF EXISTS teams;
         """
         CURSOR.execute(sql)
         CONN.commit()
 
     def save(self):
         sql = """
-                INSERT INTO team (nickname, in_party, pokemon_id)
-                VALUES (?, ?, ?)
+            INSERT INTO teams (name, city, league)
+            VALUES (?, ?, ?)
         """
-        CURSOR.execute(sql, (self.nickname, self.in_party, self.pokemon_id))
+        CURSOR.execute(sql, (self.name, self.city, self.league))
         CONN.commit()
 
         self.id = CURSOR.lastrowid
         type(self).all[self.id] = self
 
+    @classmethod
+    def create(cls, name, city, league):
+        team = cls(name, city, league)
+        team.save()
+        return team
+    
     def update(self):
         sql = """
-            UPDATE team
-            SET nickname = ?, in_party = ?, pokemon_id = ?
+            UPDATE teams
+            SET name = ?, city = ?, league = ?
             WHERE id = ?
         """
-        CURSOR.execute(sql, (self.nickname, self.in_party, self.pokemon_id, self.id))
+        CURSOR.execute(sql, (self.name, self.city, self.league, self.id))
         CONN.commit()
 
     def delete(self):
         sql = """
-            DELETE FROM team
+            DELETE FROM teams
             WHERE id = ?
         """
         CURSOR.execute(sql, (self.id,))
         CONN.commit()
+
         # Delete the dictionary entry using id as the key
         del type(self).all[self.id]
+
         # Set the id to None
         self.id = None
 
     @classmethod
-    def create(cls, nickname, pokemon_id, in_party):
-        team = cls(nickname,pokemon_id, in_party) 
-        team.save()
-        return team
-
-    @classmethod
     def instance_from_db(cls, row):
-        # Check the dictionary for  existing instance using the row's primary key
+        # Check the dictionary for an existing instance using the row's primary key
         team = cls.all.get(row[0])
         if team:
             # ensure attributes match row values in case local instance was modified
-            team.nickname = row[1]
-            team.in_party = row[2]
-            team.pokemon_id = row[3]
+            team.name = row[1]
+            team.city = row[2]
+            team.league = row[3]
         else:
             # not in dictionary, create new instance and add to dictionary
             team = cls(row[1], row[2], row[3])
@@ -131,51 +129,52 @@ class Team:
             cls.all[team.id] = team
         return team
 
-
     @classmethod
     def get_all(cls):
-        """Return a list containing one team object per table row"""
         sql = """
             SELECT *
-            FROM team
+            FROM teams
         """
-
         rows = CURSOR.execute(sql).fetchall()
-
         return [cls.instance_from_db(row) for row in rows]
 
     @classmethod
     def find_by_id(cls, id):
-        """Return team object corresponding to the table row matching the specified primary key"""
         sql = """
             SELECT *
-            FROM team
+            FROM teams
             WHERE id = ?
         """
-
         row = CURSOR.execute(sql, (id,)).fetchone()
         return cls.instance_from_db(row) if row else None
 
     @classmethod
-    def find_by_nickname(cls, nickname):
-        """Return team object corresponding to first table row matching specified nickname"""
+    def find_by_name(cls, name):
         sql = """
             SELECT *
-            FROM team
-            WHERE nickname is ?
+            FROM teams
+            WHERE name is ?
         """
-
-        row = CURSOR.execute(sql, (nickname,)).fetchone()
+        row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
     
     @classmethod
-    def list_all_party(cls):
-        """Return a list containing an artist object per row in the table matching genre attribute"""
+    def find_by_city(cls, city):
         sql = """
             SELECT *
-            FROM team
-            WHERE in_party is 1
+            FROM teams
+            WHERE city is ?
         """
-
-        rows = CURSOR.execute(sql).fetchall()
+        rows = CURSOR.execute(sql, (city,)).fetchall()
         return [cls.instance_from_db(row) for row in rows]
+    
+    @classmethod
+    def find_by_league(cls, league):
+        sql = """
+            SELECT *
+            FROM teams
+            WHERE league is ?
+        """
+        rows = CURSOR.execute(sql, (league,)).fetchall()
+        return [cls.instance_from_db(row) for row in rows]
+    

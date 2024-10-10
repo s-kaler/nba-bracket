@@ -1,341 +1,199 @@
 # lib/helpers.py
 import random
 
-from models.pokemon import Pokemon
 from models.team import Team
+from models.player import Player
 
 def exit_program():
     print("Goodbye! Thanks for playing!")
     exit()
 
-#pokemon functions 
-def list_pokemon_all():
-    pokemon_all = Pokemon.get_all()
-    for pokemon in pokemon_all:
-        print(pokemon)
-
-def find_pokemon_by_name():
-    name = input("Enter the pokemon's name: ")
-    pokemon = Pokemon.find_by_name(name)
-    print(pokemon) if pokemon else print(
-        f'Pokemon {name} not found')
-
-def find_pokemon_by_id():
-    id_ = input("Enter the pokemon's id: ")
-    pokemon = Pokemon.find_by_id(id_)
-    print(pokemon) if pokemon else print(f'Pokemon {id_} not found')
-
-
-def create_pokemon():
-    name = input("Enter the pokemon's name: ")
-    genre = input("Enter the pokemon's genre: ")
-    try:
-        pokemon = Pokemon.create(name, genre)
-        print(f'Success: {pokemon}')
-    except Exception as exc:
-        print("Error creating pokemon: ", exc)
-
-def update_pokemon():
-    id_ = input("Enter the pokemon's id: ")
-    if pokemon := Pokemon.find_by_id(id_):
-        try:
-            name = input("Enter the pokemon's new name: ")
-            pokemon.name = name
-            genre = input("Enter the pokemon's new genre: ")
-            pokemon.genre = genre
-
-            pokemon.update()
-            print(f'Success: {pokemon}')
-        except Exception as exc:
-            print("Error updating pokemon: ", exc)
-    else:
-        print(f'Pokemon {id_} not found')
-
-def delete_pokemon():
-    id_ = input("Enter the pokemon's id: ")
-    if pokemon := Pokemon.find_by_id(id_):
-        pokemon.delete()
-        print(f'Pokemon {id_} deleted')
-    else:
-        print(f'Pokemon {id_} not found')
-
-def list_pokemon_by_type():
-    find_type = input("Enter the pokemon's type: ")
-    if pokemon_all := Pokemon.find_by_type(find_type):
-        for pokemon in pokemon_all:
-            print(pokemon)
-    else:
-        print(f'No pokemon_all with {find_type} found')
-
-def greeting():
-    print("Please choose one of the three starter Pokemon.")
-    bulbasaur = Pokemon.find_by_name("Bulbasaur")
-    charmander = Pokemon.find_by_name("Charmander")
-    squirtle = Pokemon.find_by_name("Squirtle")
-    print(f"1. {bulbasaur}")
-    print(f"2. {charmander}")
-    print(f"3. {squirtle}")
-
-def add_starter():
-    pokemon_name = ""
-    while True:
-        starter_choice = input("> ")
-        if starter_choice == "1" or starter_choice == "2" or starter_choice == "3":
-            if starter_choice == "1":
-                pokemon_name = "Bulbasaur"
-            elif starter_choice == "2":
-                pokemon_name = "Charmander"
-            elif starter_choice == "3":
-                pokemon_name = "Squirtle"
-            break
-        else:
-            print("Invalid choice")
-    print(f"You've chosen {pokemon_name}! Give your pokemon a nickname: ")
-    while True:
-        nickname = input("> ")
-        if nickname:
-            pokemon = Pokemon.find_by_name(pokemon_name)
-            new_team = Team.create(nickname, pokemon.id, True)
-            print(f'Success: {nickname} has been added to the team!')
-            return True
-        else:
-            print("Please enter a nickname.")
-
-def list_all_in_team():
+#team functions 
+def list_team_all():
     team_all = Team.get_all()
     for team in team_all:
         print(team)
 
-def list_current_party():
-    party = Team.list_all_party()
+def find_team_by_id():
+    id_ = input("Enter the team's id:\n> ")
+    team = Team.find_by_id(id_)
+    print(team) if team else print(f'Team {id_} not found.')
+
+def find_team_by_name():
+    name = input("Enter the team's name:\n> ")
+    team = Team.find_by_name(name)
+    print(team) if team else print(f'Team {name} not found.')
+
+def find_team_by_city():
+    city = input("Enter the team's city: ")
+    team = Team.find_by_city(city)
+    print(team) if team else print(f'Team in {city} not found.')
+
+def find_team_by_league():
+    print("Enter the team's league:")
+    print("1. NBA")
+    print("2. NCAA")
+    while True:
+        league = input("> ")
+        if league.isdigit() and (league == '1' or league == '0'):
+            league = 'NBA' if league == '1' else 'NCAA'
+            team = Team.find_by_league(league)
+            print(team) if team else print(f'Team in {league} not found.')
+            break
+        else:
+            print("Please select a valid league.")
+    
+
+def create_team():
+    name = input("Enter the team's name:\n> ")
+    print("Enter the team's city: ")
+    city = input("Enter the team's city:\n> ")
+    print("Enter the team's league: ")
+    print("1. NBA")
+    print("2. NCAA")
+    while True:
+        league = input("> ")
+        if league.isdigit() and (league == '1' or league == '0'):
+            league = 'NBA' if league == '1' else 'NCAA'
+            break
+        else:
+            print("Please select a valid league.")
+    try:
+        team = Team.create(name, city, league)
+        print(f'Success: {team} created!')
+    except Exception as exc:
+        print("Error creating team: ", exc)
+
+def update_team():
+    id_ = input("Enter the team's id:\n> ")
+    if team := Team.find_by_id(id_):
+        try:
+            name = input("Enter the team's new name:\n> ")
+            team.name = name
+            city = input("Enter the team's new city:\n> ")
+            team.city = city
+            print("Enter the team's league: ")
+            print("1. NBA")
+            print("2. NCAA")
+            while True:
+                league = input("> ")
+                if league.isdigit() and (league == '1' or league == '0'):
+                    league = 'NBA' if league == '1' else 'NCAA'
+                    break
+                else:
+                    print("Please select a valid league.")
+            team.update()
+            print(f'Success: {team}')
+        except Exception as exc:
+            print("Error updating team: ", exc)
+    else:
+        print(f'Team {id_} not found.')
+
+def delete_team():
+    id_ = input("Enter the team's id:\n> ")
+    if team := Team.find_by_id(id_):
+        team.delete()
+        print(f'Team {id_} deleted.')
+    else:
+        print(f'Team {id_} not found.')
+
+def list_team_by_city():
+    find_city = input("Enter the team's city:\n> ")
+    if team_all := Team.find_by_city(find_city):
+        for team in team_all:
+            print(team)
+    else:
+        print(f'No team in {find_city} found.')
+
+def list_team_by_league():
+    print("Enter the team's league:")
+    print("1. NBA")
+    print("2. NCAA")
+    while True:
+        league = input("> ")
+        if league.isdigit() and (league == '1' or league == '0'):
+            league = 'NBA' if league == '1' else 'NCAA'
+            if team_all := Team.find_by_league(league):
+                for team in team_all:
+                    print(team)
+            else:
+                print(f'No team in {league} found.')
+            break
+        else:
+            print("Please select a valid league.")
+
+def greeting():
+    print("Please choose one of the three starter Team.")
+    bulbasaur = Team.find_by_name("Bulbasaur")
+    charmander = Team.find_by_name("Charmander")
+    squirtle = Team.find_by_name("Squirtle")
+    print(f"1. {bulbasaur}")
+    print(f"2. {charmander}")
+    print(f"3. {squirtle}")
+
+
+def list_all_players():
+    player_all = Player.get_all()
+    for player in player_all:
+        print(player)
+
+def list_players_in_team():
+    team_name = input("Please enter the team you want to see the roster for:\n> ")
+    team = Team.find_by_name(team_name)
+    team_roster = Player.find_by_team_id(team.id)
     print("Current Party: ")
-    for team in party:
-        print(team)
-    print(f'Party Level: {party_level()}')
-    
-def party_level():
-    party = Team.list_all_party()
-    total_level = 0
-    for team in party:
-        total_level += Pokemon.find_by_id(team.pokemon_id).level
-    return total_level
+    for player in team_roster:
+        if player.active == 1:
+            print(player)
+    for player in team_roster:
+        if player.active == 0:
+            print(player)
 
-def change_nickname():
-    print("Choose a pokemon to change the nickname of: ")
-    old_nickname = input("> ")
-    team = Team.find_by_nickname(old_nickname)
-    if team:
+
+def change_name():
+    print("Choose a player to change the name of: ")
+    old_name = input("> ")
+    player = Player.find_by_name(old_name)
+    if player:
         print("What would you like to change it to?")
-        new_nickname = input("> ")
-        team.nickname = new_nickname
-        team.update()
-        print(f'Success: {old_nickname} has been changed to {new_nickname}.')
+        new_name = input("> ")
+        player.name = new_name
+        player.update()
+        print(f'Success: {old_name} has been changed to {new_name}.')
     else:
-        print(f'Team member {old_nickname} not found.')
+        print(f'Player member {old_name} not found.')
 
-def remove_pokemon_from_party():
-    party = Team.list_all_party()
-    if len(party) == 1:
-        print("You cannot remove the last member from the party.")
+def remove_team_from_active():
+    print("Which player do you want to remove?")
+    name = input("> ")
+    party_member = Player.find_by_name(name)
+    if party_member:
+        if party_member.active == 1:
+            party_member.active = 0
+            party_member.update()
+            print(f'Success: {name} has been removed from the active roster.')
+        else:
+            print(f'{name} is not currently in the active roster.')
+    else:
+        print(f'Party member {name} not found.')
+
+
+def add_player_to_active():
+    roster = Player.find_by_active(1)
+    if len(roster) == 5:
+        print("You cannot add more than 5 members to the active roster.")
         return
     else:
-        print("Which party member do you want to remove?")
-        nickname = input("> ")
-        party_member = Team.find_by_nickname(nickname)
-        if party_member:
-            if party_member.in_party == 1:
-                party_member.in_party = 0
-                party_member.update()
-                print(f'Success: {nickname} has been removed from the party.')
+        print("Which player do you want to add?")
+        name = input("> ")
+        new_party_member = Player.find_by_name(name)
+        if new_party_member:
+            if new_party_member.active == 0:
+                new_party_member.name = 1
+                new_party_member.name()
+                print(f'Success: {name} has been removed from the active roster.')
             else:
-                print(f'{nickname} is not currently in the party.')
+                print(f'{name} is already in the active roster.')
         else:
-            print(f'Party member {nickname} not found.')
+            print(f'Player member {name} not found.')
 
-
-def add_pokemon_to_party():
-    all_team = Team.get_all()
-    party = Team.list_all_party()
-    
-    if len(party) == 6:
-        print("You cannot add more than 6 members to the party.")
-        return
-    else:
-        if len(party) == len(all_team):
-            print("You do not have any pokemon to add to the party")
-            return
-        else:
-            print("Which party member do you want to add?")
-            nickname = input("> ")
-            new_party_member = Team.find_by_nickname(nickname)
-            if new_party_member:
-                if new_party_member.in_party == 0:
-                    new_party_member.in_party = 1
-                    new_party_member.update()
-                    print(f'Success: {nickname} has been removed from the party.')
-                else:
-                    print(f'{nickname} is already in the party.')
-            else:
-                print(f'Team member {nickname} not found.')
-
-
-#for catching pokemon, if the wild pokemon is between certain levels, it will be harder to catch
-#1 to 10 is easy
-#10 to 30 is medium
-#30 to 50 is hard
-#50+ is very hard
-#add up level of all pokemon in party to increase chances of catching
-
-def catch_pokemon():
-    pokedex_length = len(Pokemon.get_all())
-    random_id = random.randint(1, pokedex_length)
-    wild_pokemon = Pokemon.find_by_id(random_id)
-    wild_level =  wild_pokemon.level
-    difficulty = 0
-    difficulty_pct = 0
-    if wild_level >= 1 and wild_level < 10:
-        difficulty = "Easy"
-        difficulty_pct = 75
-    elif wild_level >= 10 and wild_level < 30:
-        difficulty = "Medium"
-        difficulty_pct = 50
-    elif wild_level >= 30 and wild_level < 50:
-        difficulty = "Hard"
-        difficulty_pct = 25
-    else:
-        difficulty = "Very Hard"
-        difficulty_pct = 10
-
-    party = Team.list_all_party()
-    party_lvl = party_level()
-    chance_boost = party_lvl / 5
-    chance_to_catch = random.randint(0, 100) + chance_boost
-    will_be_caught = False
-    if chance_to_catch <= difficulty_pct:
-        will_be_caught = True
-    
-    print("")
-    print(f"A wild {wild_pokemon.name} appeared!")
-    print(f"Difficulty: {difficulty}")
-    print(wild_pokemon)
-    print("What would like to do?")
-    print("1. Catch pokemon")
-    print("2. Run away")
-    while True:
-        choice = input("> ")
-        if choice == "1":
-            if(will_be_caught):
-                print(f"Success! You caught a {wild_pokemon.name}!")
-                print("Give it a nickname: ")
-                while True:
-                    nickname = input("> ")
-                    if team := Team.find_by_nickname(nickname):
-                        print("You already have a team member with that nickname!")
-                    else:
-                        break  # Exit the loop if the nickname is unique
-                if len(party) == 6:
-                    new_team = Team.create(nickname, wild_pokemon.id, False)
-                else:
-                    new_team = Team.create(nickname, wild_pokemon.id, True)
-                print(f'Success: {nickname} has been added to the team!')
-                return True
-            else:
-                print(f"The pokeball broke and the pokemon got away.")
-                return True
-        elif choice == "2":
-            print("The wild pokemon got away.")
-            return False
-        else:
-            print("Invalid choice. Please try again.")
-
-def release_team():
-    party = Team.list_all_party()
-    team_all = Team.get_all()
-    if len(team_all) == 1:
-        print("You cannot release the last pokemon from the team!")
-        return 0
-    print("Choose a pokemon to release:")
-    nickname = input("> ")
-    team_member = Team.find_by_nickname(nickname)
-    
-    if team_member:
-        released_money = Pokemon.find_by_id(team_member.pokemon_id).level * 3
-        if team_member.in_party == 1 and len(party) == 1:
-            print(f'You cannot release your last pokemon in the party!')
-            return 0
-        if team_member.id == 1:
-            print("You cannot release your starter pokemon from the team!")
-            return 0
-        else:
-            print(f'Are you sure you want to release {nickname}?')
-            are_you_sure = input("> y/n? ")
-            if are_you_sure == "y":
-                team_member.delete()
-                print(f'Success: {nickname} has been released from the team.')
-                print(f'You gained ${released_money}')
-                return released_money
-            else:
-                return 0
-    else:
-        print(f'Team member {nickname} not found.')
-        return 0
-    
-def create_new_pokemon():
-    print("WARNING: Creating a new Pokemon may make your experience unbalanced.")
-    print("Are you sure you want to continue?")
-    are_you_sure = input("> y/n? ")
-    if are_you_sure == "y":
-        pass
-    else:
-        print("New Pokemon creation cancelled.")
-        return 0
-    print("Enter the name of your new Pokemon: ")
-    while True:
-        new_pokemon_name = input("> ")
-        if new_pokemon_name:
-            if Pokemon.find_by_name(new_pokemon_name):
-                print("That name is already taken. Please choose a different name.")
-            else:
-                break  # Exit the loop if the name is unique
-        else:
-                print("Invalid choice. Please enter a name for your new Pokemon.")
-    print("Choose a Type for your new Pokemon: ")
-    for index, type1 in enumerate(Pokemon.TYPES):
-        print(f"{index}. {type1}")
-    while True:
-        new_pokemon_type1 = input("> ")
-        if new_pokemon_type1.isdigit() and int(new_pokemon_type1) >= 0 and int(new_pokemon_type1) < len(Pokemon.TYPES):
-            new_pokemon_type1 = Pokemon.TYPES[int(new_pokemon_type1)]
-            break
-        else:
-            print("Invalid choice. Please try again.")
-    print("Choose a second Type for your new Pokemon: ")
-    print("If you do not want a second type, type None")
-    while True:
-        new_pokemon_type2 = input("> ")
-        if new_pokemon_type2.lower() == "none":
-            new_pokemon_type2 = None
-            break
-        elif new_pokemon_type2.isdigit() and int(new_pokemon_type2) >= 0 and int(new_pokemon_type2) < len(Pokemon.TYPES):
-            new_pokemon_type2 = Pokemon.TYPES[int(new_pokemon_type2)]
-            break
-        else:
-            print("Invalid choice. Please enter a number between 1 and 100.")
-    print("Enter the level of your new Pokemon: ")
-    while True:
-        new_pokemon_level = input("> ")
-        if new_pokemon_level.isdigit() and int(new_pokemon_level) > 0 and int(new_pokemon_level) <= 100:
-            new_pokemon_level = int(new_pokemon_level)
-            break
-        else:
-            print("Invalid choice. Please try again.")
-    print("Please enter the HP of your new Pokemon: ")
-    while True:
-        new_pokemon_hp = input("> ")
-        if new_pokemon_hp.isdigit() and int(new_pokemon_hp) > 0 and int(new_pokemon_hp) <= 1000:
-            new_pokemon_hp = int(new_pokemon_hp)
-            break
-        else:
-            print("Invalid choice. Please enter a number between 1 and 1000.")
-    new_pokemon = Pokemon.create(new_pokemon_name, new_pokemon_type1, new_pokemon_level, new_pokemon_hp, new_pokemon_type2)
-    print(f'Success: {new_pokemon} has been added to the Pokedex.')
