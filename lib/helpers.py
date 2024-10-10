@@ -143,10 +143,10 @@ def list_players_in_team():
     team_roster = Player.find_by_team_id(team.id)
     print("Current Party: ")
     for player in team_roster:
-        if player.active == 1:
+        if player.starter == 1:
             print(player)
     for player in team_roster:
-        if player.active == 0:
+        if player.starter == 0:
             print(player)
 
 
@@ -163,37 +163,37 @@ def change_name():
     else:
         print(f'Player member {old_name} not found.')
 
-def remove_team_from_active():
+def remove_player_from_starter():
     print("Which player do you want to remove?")
     name = input("> ")
     party_member = Player.find_by_name(name)
     if party_member:
-        if party_member.active == 1:
-            party_member.active = 0
+        if party_member.starter == 1:
+            party_member.starter = 0
             party_member.update()
-            print(f'Success: {name} has been removed from the active roster.')
+            print(f'Success: {name} has been removed from the starter roster.')
         else:
-            print(f'{name} is not currently in the active roster.')
+            print(f'{name} is not currently in the starter roster.')
     else:
         print(f'Party member {name} not found.')
 
 
-def add_player_to_active():
-    roster = Player.find_by_active(1)
+def add_player_to_starter():
+    roster = Player.find_by_starter(1)
     if len(roster) == 5:
-        print("You cannot add more than 5 members to the active roster.")
+        print("You cannot add more than 5 members to the starter roster.")
         return
     else:
         print("Which player do you want to add?")
         name = input("> ")
         new_party_member = Player.find_by_name(name)
         if new_party_member:
-            if new_party_member.active == 0:
+            if new_party_member.starter == 0:
                 new_party_member.name = 1
                 new_party_member.name()
-                print(f'Success: {name} has been removed from the active roster.')
+                print(f'Success: {name} has been removed from the starter roster.')
             else:
-                print(f'{name} is already in the active roster.')
+                print(f'{name} is already in the starter roster.')
         else:
             print(f'Player member {name} not found.')
 
