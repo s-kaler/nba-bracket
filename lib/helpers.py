@@ -23,8 +23,7 @@ def teams_menu():
         print(" 3. Find team by location")
         print(" 4. Create a new team")
         print(" 5. Update a team's information")
-        print(" 6. Update a team's starting roster")
-        print(" 7. Delete a team")
+        print(" 6. Delete a team")
 
         choice = input("> ")
         if choice == "0":
@@ -40,8 +39,6 @@ def teams_menu():
         elif choice == "5":
             update_team()
         elif choice == "6":
-            update_starting_roster()
-        elif choice == "7":
             delete_team()
         else:
             print("Invalid choice.")
@@ -57,9 +54,10 @@ def players_menu():
         print(" 3. Find players by name")
         print(" 4. Find players by height")
         print(" 5. Find players by position")
-        print(" 6. Create a new player")
-        print(" 7. Update a player's information")
-        print(" 8. Delete a player")
+        print(" 6. Update a starting roster")
+        print(" 7. Create a new player")
+        print(" 8. Update a player's information")
+        print(" 9. Delete a player")
         choice = input("> ")
         if choice == "0":
             return
@@ -74,10 +72,12 @@ def players_menu():
         elif choice == "5":
             find_players_by_position()
         elif choice == "6":
-            create_player()
+            update_starting_roster()
         elif choice == "7":
-            update_player()
+            create_player()
         elif choice == "8":
+            update_player()
+        elif choice == "9":
             delete_player()
         else:
             print("Invalid choice.")
