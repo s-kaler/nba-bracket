@@ -13,7 +13,7 @@ class Team:
         self.id = id
 
     def __repr__(self):
-        return f"{self.location} {self.name}, League: {self.league}"
+        return f"<Team {self.name}: Location: {self.location}, League: {self.league}, ID: {self.id}>"
 
     @property
     def name(self):

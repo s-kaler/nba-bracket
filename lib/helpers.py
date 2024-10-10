@@ -57,7 +57,8 @@ def players_menu():
         print(" 6. Update a starting roster")
         print(" 7. Create a new player")
         print(" 8. Update a player's information")
-        print(" 9. Delete a player")
+        print(" 9. Change a player's team")
+        print(" 10. Delete a player")
         choice = input("> ")
         if choice == "0":
             return
@@ -78,6 +79,8 @@ def players_menu():
         elif choice == "8":
             update_player()
         elif choice == "9":
+            change_player_team()
+        elif choice == "10":
             delete_player()
         else:
             print("Invalid choice.")
@@ -87,7 +90,8 @@ def list_team_all():
     print("Which league do you want to list?")
     print("1. NBA")
     print("2. NCAA")
-    while True:
+    is_not_found = True
+    while is_not_found:
         league_input = input("> ")
         if league_input.isdigit() and (league_input == '1' or league_input == '2'):
             if league_input == '1':
@@ -97,8 +101,8 @@ def list_team_all():
             team_all = Team.find_by_league(league)
             print(f"Teams in {league} league:")
             for team in team_all:
-                print("  ", team)
-            break
+                print(f"  {team.location} {team.name}")
+            is_not_found = False
         else:
             print("Please select a valid league.")
 
@@ -106,65 +110,71 @@ def list_team_all():
 def find_team_by_id():
     id_ = input("Enter the team's id:\n> ")
     team = Team.find_by_id(id_)
-    print(team) if team else print(f'Team {id_} not found.')
+    print(f"{team.location} {team.name} | League: {team.league}") if team else print(f'Team {id_} not found.')
 
 def find_team_by_name():
     print("Enter the team's name:")
-    while True:
+    is_not_found = True
+    while is_not_found:
         name = input("> ")
         if isinstance(name, str) and name:
-            break
+            is_not_found = False
         else:
             print("Name must be a non-empty string.")
     if team := Team.find_by_name(name):
-        print(team)
+        print(f"{team.location} {team.name} | League: {team.league}")
     else:
         print(f'Team {name} not found.')
 
 def find_team_by_location():
     print("Enter the team's location:")
-    while True:
+    is_not_found = True
+    while is_not_found:
         location = input("> ")
         if isinstance(location, str) and location:
-            break
+            if teams := Team.find_by_location(location):
+                for team in teams:
+                    print(f"{team.location} {team.name} | League: {team.league}")
+            else:
+                print(f'Team in {location} not found.')
+            is_not_found = False
         else:
             print("Location must be a non-empty string.")
-    if teams := Team.find_by_location(location):
-        for team in teams:
-            print(team)
-    else:
-        print(f'Team in {location} not found.')
+    
     
 
 def create_team():
     print("Enter the team's location:")
-    while True:
+    location_not_found = True
+    while location_not_found:
         location = input("> ")
         if isinstance(location, str) and location:
-            break
+            location_not_found = False
         else:
             print("Location must be a non-empty string.")
     print("Enter the team's name:")
-    while True:
+    name_not_found = True
+    while name_not_found:
         name = input("> ")
         if isinstance(name, str) and name:
             if Team.find_by_name(name):
                 print("Team name already exists. Please choose a different name.")
             else:
-                break
+                name_not_found = False
         else:
             print("Team name must be a non-empty string.")
     print("Enter the team's league: ")
     print("1. NBA")
     print("2. NCAA")
     league = ''
-    while True:
+    is_not_created = True
+    while is_not_created:
         league_input = input("> ")
         if league_input.isnumeric() and (league_input == '1' or league_input == '2'):
             league = 'NBA' if league_input == '1' else 'NCAA'
             team = Team.create(name, location, league)
-            print(f'Success: {team} created!')
-            break
+            print(f'Success: {team.location} {team.name} created!')
+            is_not_created = False
         else:
             print("Please select a valid league.")
     
@@ -173,37 +183,40 @@ def update_team():
     if team := Team.find_by_name(name):
         try: 
             print("Enter the team's new name:")
-            while True:
+            name_not_created = True
+            while name_not_created:
                 new_name = input("> ")
                 if isinstance(new_name, str) and new_name:
                     if new_name != name and Team.find_by_name(new_name):
                         print("Team name already exists. Please choose a different name.")
                     else:
                         team.name = name
-                        break
+                        name_not_created = False
                 else:
                     print("Team name must be a non-empty string.")
             print("Enter the team's new location:")
-            while True:
+            location_not_created = True
+            while location_not_created:
                 location = input("> ")
                 if isinstance(location, str) and location:
                     team.location = location
-                    break
+                    location_not_created = False
                 else:
                     print("Location must be a non-empty string.")
 
             print("Enter the team's league: ")
             print("1. NBA")
             print("2. NCAA")
-            while True:
+            league_not_created = True
+            while league_not_created:
                 league_input = input("> ")
                 if league_input.isnumeric() and (league_input == '1' or league_input == '2'):
                     team.league = 'NBA' if league_input == '1' else 'NCAA'
-                    break
+                    league_not_created = False
                 else:
                     print("Please select a valid league.")
             team.update()
-            print(f'Success: {team}')
+            print(f'Success: {team.location} {team.name} updated.')
         except Exception as exc:
             print("Error updating team: ", exc)
     else:
@@ -232,7 +245,7 @@ def delete_team():
 def list_all_players():
     player_all = Player.get_all()
     for player in player_all:
-        print(player)
+        print(display_player(player))
 
 def list_players_by_team():
     team_name = input("Please enter the team you want to see the roster for:\n> ")
@@ -241,11 +254,11 @@ def list_players_by_team():
         print("-----Starting Roster-----")
         for player in team_roster:
             if player.starter == 1:
-                print(player)
+                print(display_player(player))
         print("-----Bench-----")
         for player in team_roster:
             if player.starter == 0:
-                print(player)
+                print(display_player(player))
     else:
         print(f"No team {team_name} found.")
 
@@ -254,7 +267,8 @@ def list_players_by_league():
     print("1. NBA")
     print("2. NCAA")
     print("3. Free Agents")
-    while True:
+    is_not_league = True
+    while is_not_league:
         league_input = input("> ")
         if league_input.isdigit() and (league_input == '1' or league_input == '2' or league_input == '3'):
             if league_input == '1':
@@ -263,7 +277,7 @@ def list_players_by_league():
                 league = 'NCAA'
             else:
                 league = None
-            break
+            is_not_league = False
         else:
             print("Please select a valid league.")
     if league == 'NBA' or league == 'NCAA':
@@ -272,11 +286,11 @@ def list_players_by_league():
             for team in team_all:
                 team_roster = Player.find_by_team_id(team.id)
                 if team_roster:
-                    print(f"{team}\nRoster: ")
+                    print(f"{team.location} {team.name}\nRoster: ")
                     for player in team_roster:
-                        print("   ", player)
+                        print("   ", display_player(player))
                 else:
-                    print(f"{team}\nRoster: No players found.")
+                    print(f"{team.location} {team.name}\nRoster: No players found.")
                 print("")
         else:
             print("No active players found.")
@@ -285,88 +299,97 @@ def list_players_by_league():
         if free_agents:
             print("Free Agents:")
             for player in free_agents:
-                print("  ", player)
+                print("  ", display_player(player))
         else:
             print("No active free agents found.")
 
 def find_player_by_name():
     print("Enter the player's name:")
-    while True:
+    is_not_found = True
+    while is_not_found:
         name = input("> ")
         if isinstance(name, str) and name:
-            break
+            player = Player.find_by_name(name)
+            if player:
+                if player.team_id:
+                    team = Team.find_by_id(player.team_id)
+                    print(f"{display_player(player)} | {team.location} {team.name}")
+                else:
+                    print(f"{display_player(player)} | Free Agent")
+            else:
+                print(f'Player {name} not found.')
+            is_not_found = False
         else:
             print("Name must be a non-empty string.")
-    player = Player.find_by_name(name)
-    if player:
-        if player.team_id:
-            team = Team.find_by_id(player.team_id)
-            print(f"{player} | {team.name}")
-        else:
-            print(f"{player} | Free Agent")
-    else:
-        print(f'Player {name} not found.')
+    
 
 def find_players_by_height():
     print("Enter the player's height (in inches): ")
-    while True:
+    is_not_found = True
+    while is_not_found:
         height_input = input("> ")
         if height_input.isdigit():
-            break
+            height = int(height_input)
+            players = Player.find_by_height(height)
+            if players:
+                for player in players:
+                    if player.team_id:
+                        team = Team.find_by_id(player.team_id)
+                        print(f"{display_player(player)}| {team.location} {team.name}")
+                    else:
+                        print(f"{display_player(player)} | Free Agent")
+            else:
+                print("No players found with that height.")
+            is_not_found = False
         else:
             print("Please enter a valid height (in inches).")
-    height = int(height_input)
-    players = Player.find_by_height(height)
-    if players:
-        for player in players:
-            if player.team_id:
-                team = Team.find_by_id(player.team_id)
-                print(f"{player} | {team.location} {team.name}")
-            else:
-                print(f"{player} | Free Agent")
-    else:
-        print("No players found with that height.")
+    
 
 def find_players_by_position():
     print("Enter the player's position: ")
-    while True:
+    is_not_found = True
+    while is_not_found:
         position = input("> ")
         if isinstance(position, str) and position:
-            break
+            players = Player.find_by_position(position)
+            if players:
+                for player in players:
+                    if player.team_id:
+                        team = Team.find_by_id(player.team_id)
+                        print(f"{display_player(player)} | {team.name}")
+                    else:
+                        print(f"{display_player(player)} | Free Agent") 
+            else:
+                print("No players found with that position.")
+            is_not_found = False
         else:
             print("Position must be a non-empty string.")
-    players = Player.find_by_position(position)
-    if players:
-        for player in players:
-            if player.team_id:
-                team = Team.find_by_id(player.team_id)
-                print(f"{player} | {team.name}")
-            else:
-                print(f"{player} | Free Agent") 
-    else:
-        print("No players found with that position.")
+    
 
 def create_player():
     print("Enter the player's name: ")
-    while True:
+    name_not_valid = True
+    while name_not_valid:
         name = input("> ")
         if isinstance(name, str) and name:
-            break
+            name_not_valid = False
         else:
             print("Name must be a non-empty string.")
     print("Enter the player's height (in inches): ")
-    while True:
+    height_not_valid = True
+    while height_not_valid:
         height_input = input("> ")
         if height_input.isdigit() and int(height_input) > 0:
             height = int(height_input)
-            break
+            height_not_valid = False
         else:
             print("Please enter a valid height (in inches).")
     print("Enter the player's position: ")
-    while True:
+    position_not_valid = True
+    while position_not_valid:
         position = input("> ")
         if isinstance(position, str) and position:
-            break
+            position_not_valid = False
         else:
             print("Name must be a non-empty string.")
     starter = 0
@@ -374,29 +397,29 @@ def create_player():
     all_teams = Team.get_all()
     print("0. None")
     for index, team in enumerate(all_teams):
-        print(f"{index+1}. {team}")
-    while True:
+        print(f"{index+1}. {team.location} {team.name}")
+    team_not_found = True
+    while team_not_found:
         team_input = input("> ")
         if team_input == '0':
             team_id = None
-            break
+            team_not_found = False
         elif team_input.isdigit and int(team_input) <= len(all_teams):
-            team_id = int(team_input)
-            team = Team.find_by_id(team_id)
+            team = all_teams[int(team_input) - 1]
+            team_id = team.id
             if len(Player.find_by_starter_and_team(1, team_id)) < 5:
                 starter = 1
-            
-            break
+            team_not_found = False
         else:
             print("Invalid team selection.")
     player = Player.create(name, height, position, starter, team_id)
     if player.team_id == None:
-        print(f'{player} has joined as a free agent!')
+        print(f'{display_player(player)} has joined as a free agent!')
     else:
         if starter == 1:
-            print(f'{player} has joined the {team.location} {team.name} as a starter!')
+            print(f'{display_player(player)} has joined the {team.location} {team.name} as a starter!')
         else:
-            print(f'{player} has joined the {team.location} {team.name}!')
+            print(f'{display_player(player)} has joined the {team.location} {team.name}!')
 
 
 def update_player():
@@ -405,29 +428,32 @@ def update_player():
     player = Player.find_by_name(old_name)
     if player:
         print("Enter the player's new name:")
-        while True:
+        name_not_valid = True
+        while name_not_valid:
             new_name = input("> ")
             if isinstance(new_name, str) and new_name:
                 player.name = new_name
-                break
+                name_not_valid = False
             else:
                 print("Name must be a non-empty string.")
 
         print("Enter the player's new height:")
-        while True:
+        height_not_valid = True
+        while height_not_valid:
             new_height = input("> ")
             if new_height.isdigit() and int(new_height) > 0:
                 player.height = int(new_height)
-                break
+                height_not_valid = False
             else:
                 print("Please enter a valid height (in inches).")
             
         print("Enter the player's new position:")
-        while True:
+        position_not_valid = True
+        while position_not_valid:
             new_position = input("> ")
             if isinstance(new_position, str) and new_position:
                 player.position = new_position
-                break
+                position_not_valid = False
             else:
                 print("Name must be a non-empty string.")
         
@@ -492,9 +518,63 @@ def update_starting_roster():
                         print("You cannot start with more than 5 players.")
                         return
             else:
-                print(f'Player must be in {team}')
+                print(f'Player must be in {team.location} {team.name}')
         else:
             print(f'Player {name} not found.')
     else:
         print(f'Team {team_name} not found.')
 
+
+def change_player_team():
+    print("Choose a player to change the team of: ")
+    is_not_found = True
+    team = None
+    while is_not_found:
+        name = input("> ")
+        if isinstance(name, str) and name:
+            player = Player.find_by_name(name)
+            if player:
+                if player.team_id:
+                    team = Team.find_by_id(player.team_id)
+                    print(f"{name} is on the {team.location} {team.name}.")
+                else:
+                    print(f"{name} is a Free Agent.")
+            else:
+                print(f'Player {name} not found.')
+                return
+            is_not_found = False
+        else:
+            print("Name must be a non-empty string.")
+    starter = 0
+    team_id = None
+    print("What team would you like to change them to? Choose None if Free Agent")
+    all_teams = Team.get_all()
+    print("0. None")
+    for index, team in enumerate(all_teams):
+        print(f"{index+1}. {team.location} {team.name}")
+    team_not_found = True
+    while team_not_found:
+        team_input = input("> ")
+        if team_input == '0':
+            team_not_found = False
+        elif team_input.isdigit and int(team_input) <= len(all_teams):
+            team = all_teams[int(team_input) - 1]
+            team_id = team.id
+            if len(Player.find_by_starter_and_team(1, team_id)) < 5:
+                starter = 1
+            team_not_found = False
+        else:
+            print("Invalid team selection.")
+    player.starter = starter
+    player.team_id = team_id
+    player.update()
+    if player.team_id == None:
+        print(f'{display_player(player)} has joined as a free agent!')
+    else:
+        if starter == 1:
+            print(f'{display_player(player)} has joined the {team.location} {team.name} as a starter!')
+        else:
+            print(f'{display_player(player)} has joined the {team.location} {team.name}!')
+
+def display_player(player):
+    return f"{player.name}: {int(player.height / 12)}\'{player.height % 12}\", {player.position}"

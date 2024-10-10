@@ -14,8 +14,8 @@ class Player:
         self.id = id
 
     def __repr__(self):
-        height_formatted = f"{int(self.height / 12)}\'{self.height % 12}\""
-        return f"{self.name}: {height_formatted}, {self.position}"
+        return f"<Player {self.name}: Height: {self.height}, Position: {self.position}, team_id: {self.team_id}, Starter: {self.starter}, ID: {self.id}>"
+
     
     @property
     def name(self):
