@@ -9,7 +9,75 @@ def exit_program():
     exit()
     
 def greeting():
-    pass
+    print("Welcome to the NBA and NCAA Brackets!")
+    print("Here, you will be able to manage teams for each league.")
+    print("You will be able to create new teams for each league and draft new players as well.")
+    print("")
+
+def teams_menu():
+    while True:
+        print("Teams Menu")
+        print(" 0. Back")
+        print(" 1. List all teams by league")
+        print(" 2. Find team by name")
+        print(" 3. Find team by location")
+        print(" 4. Create a new team")
+        print(" 5. Update a team's information")
+        print(" 6. Update a team's starting roster")
+        print(" 7. Delete a team")
+
+        choice = input("> ")
+        if choice == "0":
+            return
+        elif choice == "1":
+            list_team_all()
+        elif choice == "2":
+            find_team_by_name()
+        elif choice == "3":
+            find_team_by_location()
+        elif choice == "4":
+            create_team()
+        elif choice == "5":
+            update_team()
+        elif choice == "6":
+            update_starting_roster()
+        elif choice == "7":
+            delete_team()
+        else:
+            print("Invalid choice.")
+        
+
+def players_menu():
+    while True:
+        print("Players Menu")
+        print(" 0. Back")
+        print(" 1. List all players by league")
+        print(" 2. List all players by team")
+        print(" 3. Find players by name")
+        print(" 4. Find players by height")
+        print(" 5. Find players by position")
+        print(" 6. Create a new player")
+        print(" 7. Update a player's information")
+        print(" 8. Delete a player")
+        choice = input("> ")
+        if choice == "0":
+            return
+        elif choice == "1":
+            list_players_by_league()
+        elif choice == "2":
+            list_players_by_team()
+        elif choice == "3":
+            find_player_by_name()
+        elif choice == "4":
+            find_players_by_height()
+        elif choice == "5":
+            find_players_by_position()
+        elif choice == "6":
+            create_player()
+        elif choice == "7":
+            update_player()
+        elif choice == "8":
+            delete_player()
 
 
 def list_team_all():
@@ -140,7 +208,7 @@ def delete_team():
             team.delete()
             print(f'Team {name} deleted. Any players have become free agents.')
         else:
-            print("Team {name} not deleted.")
+            print(f"Team {name} not deleted.")
             return
     else:
         print(f'Team {name} not found.')
@@ -354,7 +422,7 @@ def delete_player():
         choice = input("> ")
         if choice.lower() == 'y':
             player.delete()
-            print(f'Success: {name} has been deleted.')
+            print(f'Success: {name} has retired.')
         else:
             print(f'Player {name} not deleted.')
     else:
