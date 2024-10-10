@@ -311,18 +311,19 @@ def find_players_by_height():
     print("Enter the player's height (in inches): ")
     while True:
         height_input = input("> ")
-        if height.isdigit():
+        if height_input.isdigit():
             break
         else:
             print("Please enter a valid height (in inches).")
     height = int(height_input)
     players = Player.find_by_height(height)
-    for player in players:
-        if player.team_id:
-            team = Team.find_by_id(player.team_id)
-            print(f"{player} | {team.name}")
-        else:
-            print(f"{player} | Free Agent")
+    if players:
+        for player in players:
+            if player.team_id:
+                team = Team.find_by_id(player.team_id)
+                print(f"{player} | {team.location} {team.name}")
+            else:
+                print(f"{player} | Free Agent")
     else:
         print("No players found with that height.")
 
@@ -431,7 +432,7 @@ def update_player():
                 print("Name must be a non-empty string.")
         
         player.update()
-        print(f'Success: {new_name} has been changed.')
+        print(f'Success: {new_name} has been updated.')
     else:
         print(f'Player member {old_name} not found.')
 
