@@ -255,18 +255,18 @@ def list_players_by_league():
     print("2. NCAA")
     print("3. Free Agents")
     while True:
-        league = input("> ")
-        if league.isdigit() and (league == '1' or league == '2' or league == '3'):
-            if league == '1':
+        league_input = input("> ")
+        if league_input.isdigit() and (league_input == '1' or league_input == '2' or league_input == '3'):
+            if league_input == '1':
                 league = 'NBA'
-            elif league == '2':
+            elif league_input == '2':
                 league = 'NCAA'
             else:
                 league = None
             break
         else:
             print("Please select a valid league.")
-    if league == '1' or league == '2':
+    if league == 'NBA' or league == 'NCAA':
         team_all = Team.find_by_league(league)
         if team_all:
             for team in team_all:
