@@ -99,20 +99,33 @@ def list_team_all():
         else:
             print("Please select a valid league.")
 
+#id will go unused in user interface
 def find_team_by_id():
     id_ = input("Enter the team's id:\n> ")
     team = Team.find_by_id(id_)
     print(team) if team else print(f'Team {id_} not found.')
 
 def find_team_by_name():
-    name = input("Enter the team's name:\n> ")
+    print("Enter the team's name:")
+    while True:
+        name = input("> ")
+        if isinstance(name, str) and name:
+            break
+        else:
+            print("Name must be a non-empty string.")
     if team := Team.find_by_name(name):
         print(team)
     else:
         print(f'Team {name} not found.')
 
 def find_team_by_location():
-    location = input("Enter the team's location:\n> ")
+    print("Enter the team's location:")
+    while True:
+        location = input("> ")
+        if isinstance(location, str) and location:
+            break
+        else:
+            print("Location must be a non-empty string.")
     if teams := Team.find_by_location(location):
         for team in teams:
             print(team)
@@ -274,7 +287,13 @@ def list_players_by_league():
             print("No active free agents found.")
 
 def find_player_by_name():
-    name = input("Enter the player's name:\n> ")
+    print("Enter the player's name:")
+    while True:
+        name = input("> ")
+        if isinstance(name, str) and name:
+            break
+        else:
+            print("Name must be a non-empty string.")
     player = Player.find_by_name(name)
     if player:
         if player.team_id:
