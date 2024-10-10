@@ -27,7 +27,9 @@ def menu():
         teams_menu()
     elif choice == "2":
         players_menu()
-        
+    else:
+        print("Invalid choice.")
+
 if __name__ == "__main__":
     main()
 
