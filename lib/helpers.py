@@ -12,10 +12,10 @@ def greeting():
     print("Welcome to the NBA and NCAA Brackets!")
     print("Here, you will be able to manage teams for each league.")
     print("You will be able to create new teams for each league and draft new players as well.")
-    print("")
-
+    
 def teams_menu():
     while True:
+        print("")
         print("Teams Menu")
         print(" 0. Back")
         print(" 1. List all teams by league")
@@ -49,6 +49,7 @@ def teams_menu():
 
 def players_menu():
     while True:
+        print("")
         print("Players Menu")
         print(" 0. Back")
         print(" 1. List all players by league")
@@ -78,6 +79,8 @@ def players_menu():
             update_player()
         elif choice == "8":
             delete_player()
+        else:
+            print("Invalid choice.")
 
 
 def list_team_all():
