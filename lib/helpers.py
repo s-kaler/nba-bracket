@@ -335,7 +335,7 @@ def find_players_by_height():
                 for player in players:
                     if player.team_id:
                         team = Team.find_by_id(player.team_id)
-                        print(f"{display_player(player)}| {team.location} {team.name}")
+                        print(f"{display_player(player)} | {team.location} {team.name}")
                     else:
                         print(f"{display_player(player)} | Free Agent")
             else:
@@ -367,7 +367,7 @@ def find_players_by_position():
     
 
 def create_player():
-    print("Enter the player's name: ")
+    print("Enter the new player's name: ")
     name_not_valid = True
     while name_not_valid:
         name = input("> ")
@@ -375,7 +375,7 @@ def create_player():
             name_not_valid = False
         else:
             print("Name must be a non-empty string.")
-    print("Enter the player's height (in inches): ")
+    print("Enter the new player's height (in inches): ")
     height_not_valid = True
     while height_not_valid:
         height_input = input("> ")
@@ -384,7 +384,7 @@ def create_player():
             height_not_valid = False
         else:
             print("Please enter a valid height (in inches).")
-    print("Enter the player's position: ")
+    print("Enter the new  player's position: ")
     position_not_valid = True
     while position_not_valid:
         position = input("> ")
@@ -482,48 +482,57 @@ def update_starting_roster():
     
     team = Team.find_by_name(team_name)
     if team:
-        team_roster = Player.find_by_team_id(team.id)
-        team_starting_size = len(Player.find_by_starter_and_team(1, team.id))
-        print("-----Starting Roster-----")
-        for player in team_roster:
+        update_player_status(team)
+        update_again = True
+        while update_again:
+            choice = input("Do you want to update another player's status? (y/n)\n> ")
+            if choice.lower() == 'y':
+                update_player_status(team)
+            else:
+                update_again = False
+    else:
+        print(f'Team {team_name} not found.')
+    
+def update_player_status(team):
+    team_roster = Player.find_by_team_id(team.id)
+    team_starting_size = len(Player.find_by_starter_and_team(1, team.id))
+    print("-----Starting Roster-----")
+    for player in team_roster:
+        if player.starter == 1:
+            print("  ", display_player(player))
+    print("-----Bench-----")
+    for player in team_roster:
+        if player.starter == 0:
+            print("  ", display_player(player))
+    print("Which player's status do you want to change?")
+    name = input("> ")
+    player = Player.find_by_name(name)
+    if player:
+        if player in team_roster:
             if player.starter == 1:
-                print("  ", display_player(player))
-        print("-----Bench-----")
-        for player in team_roster:
-            if player.starter == 0:
-                print("  ", display_player(player))
-        print("Which player's status do you want to change?")
-        name = input("> ")
-        player = Player.find_by_name(name)
-        if player:
-            if player in team_roster:
-                if player.starter == 1:
-                    choice = input(f"Do you want to bench {name}?\ny/n? ")
+                choice = input(f"Do you want to bench {name}?\ny/n? ")
+                if choice.lower() == 'y':
+                    player.starter = 0
+                    player.update()
+                    print(f'Success: {name} has been removed from the starting roster.')
+                else:
+                    return
+            else:
+                if team_starting_size < 5:
+                    choice = input(f"Do you want to start with {name}?\ny/n? ")
                     if choice.lower() == 'y':
-                        player.starter = 0
+                        player.starter = 1
                         player.update()
-                        print(f'Success: {name} has been removed from the starting roster.')
+                        print(f'Success: {name} has been added to the starting roster.')
                     else:
                         return
                 else:
-                    if team_starting_size < 5:
-                        choice = input(f"Do you want to start with {name}?\ny/n? ")
-                        if choice.lower() == 'y':
-                            player.starter = 1
-                            player.update()
-                            print(f'Success: {name} has been added to the starting roster.')
-                        else:
-                            return
-                    else:
-                        print("You cannot start with more than 5 players.")
-                        return
-            else:
-                print(f'Player must be in {team.location} {team.name}')
+                    print("You cannot start with more than 5 players.")
+                    return
         else:
-            print(f'Player {name} not found.')
+            print(f'Player must be in {team.location} {team.name}')
     else:
-        print(f'Team {team_name} not found.')
-
+        print(f'Player {name} not found.')
 
 def change_player_team():
     print("Choose a player to change the team of: ")
